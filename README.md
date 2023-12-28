@@ -37,8 +37,7 @@ class SearchForm extends ElementCollection {
 Base elements are locators for HTML elements on the webpage. They should exist as chained from the base container, or
 another element selector in the collection.
 
-"Getters" represent a static element, or array of elements, that can be returned. They should be written as **
-camelCase**:
+"Getters" represent a static element, or array of elements, that can be returned. They should be written as **camelCase**:
 
 ```js
 class AddressForm extends ElementCollection {
