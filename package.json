@@ -1,0 +1,24 @@
+{
+  "name": "cypress-page-object",
+  "version": "0.0.1",
+  "description": "A set of template classes and guides to help with developing page objects in Cypress.",
+  "keywords": [
+    "cypress",
+    "component testing",
+    "page object",
+    "test",
+    "test automation"
+  ],
+  "main": "index.js",
+  "repository": "https://github.com/hammzj/cypress-page-object.git",
+  "author": "Zachary Hamm <zjhamm304+github@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.2",
+    "prettier": "^3.1.1"
+  }
+}
