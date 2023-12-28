@@ -39,13 +39,13 @@ export default class PageObject extends ElementCollection {
      * @param pathInputs {...string} used to replace path variables. This should equal the same amount of path variables found; additional inputs will not be used
      * @return customUrl {string}
      * @example <summary>Replacing path variables with inputs</summary>
-     * //baseUrl = `http://localhost:3000`
-     * //this.#path = `/user/:userId/post/:postId`
-     * this._customPathUrl('1234', 'post-9876') => `http://localhost:3000/user/1234/post/post-9876`
+     * //baseUrl = "http://localhost:3000"
+     * //this._path = "/user/:userId/post/:postId"
+     * this._customPathUrl("1234", "post-9876") => "http://localhost:3000/user/1234/post/post-9876"
      * @example <summary>A path without path variables/summary>
-     * //baseUrl = `http://localhost:3000`
-     * //this.#path = `/settings/privacy`
-     * this._customPathUrl('1234') => `http://localhost:3000/settings/privacy` //Will also log an error to the console!
+     * //baseUrl = "http://localhost:3000"
+     * //this._path = "/settings/privacy"
+     * this._customPathUrl("1234") => "http://localhost:3000/settings/privacy" //Works, but will log an error to the console
      * @private
      */
     #customPathUrl(...pathInputs) {

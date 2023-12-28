@@ -37,7 +37,8 @@ class SearchForm extends ElementCollection {
 Base elements are locators for HTML elements on the webpage. They should exist as chained from the base container, or
 another element selector in the collection.
 
-"Getters" represent a static element, or array of elements, that can be returned. They should be written as **camelCase**:
+"Getters" represent a static element, or array of elements, that can be returned. They should be written as **
+camelCase**:
 
 ```js
 class AddressForm extends ElementCollection {
@@ -219,8 +220,47 @@ class PaymentTypeButton extends ComponentObject {
 
 ## The `PageObject` class
 
-Nesting other component objects is supported, but it is highly advised to not nest another page object inside of a page
-object!
+A page object represents an entire page of an application, consisting of many element selectors, nested components, and
+possibly their own app actions and assertions that can utilize multiple nested components at once. They also have their
+own url paths that can be set and defined. URLs with replaceable path variables are also allowed, and functions exist to
+assist with constructing them.
+
+### Using a custom URL path
+
+When supplying a URL path with variables to a `PageObject` constructor, make sure the path variables are written
+as `/:STRING_TO_REPLACE`. Then, you can call `.url(...pathInputs)` to create a usable URL! However, make sure you supply
+exactly every input that needs substitution.
+
+#### Example 1: a path with variables to replace
+
+```js
+const baseUrl = `http://localhost:3000`;
+
+class UserPostsPage extends PageObject {
+    constructor() {
+        super(`/user/:userId/post/:postId`);
+    }
+}
+
+const userPostsPage = new UserPostsPage();
+userPostsPage._customPathUrl("1234", "post-9876"); //=> "http://localhost:3000/user/1234/post/post-9876"
+```
+
+#### Example 2: a path without variables
+
+```js
+const baseUrl = `http://localhost:3000`;
+
+class PrivacySettingsPage extends PageObject {
+    constructor() {
+        super(`/settings/privacy`);
+    }
+}
+
+const privacySettingsPage = new PrivacySettingsPage();
+//Works, but will log an error to the console since there are no variables, or not enough variables, to replace
+privacySettingsPage._customPathUrl("1234"); //=> "http://localhost:3000/settings/privacy"
+```
 
 ---
 
@@ -230,5 +270,5 @@ Cypress advises
 using [App Actions](https://www.cypress.io/blog/2019/01/03/stop-using-page-objects-and-start-using-app-actions), but in
 my time working with Cypress, I've found app actions can actually be used _within_ page objects! Actions that occur
 within a page can be contained in the `PageObject` class, and actions that navigate through multiple `PageObject`
-or `ComponentObject` instances can exist as organized helper functions within your application. However, the codestyle
+or `ComponentObject` instances can exist as organized helper functions within your application. However, the code styling
 and preference is up to you!

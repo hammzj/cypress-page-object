@@ -185,3 +185,20 @@ createAccountPage.AccountFormObject((accountFormObject) => {
     accountFormObject.submitButton.click();
 });
 ```
+
+## Additional notes
+
+### Nested objects can also have their own nested objects
+
+```js
+settingsPage.SettingsObject((settingsObject) => {
+    settingsPage.ToggleButton((toggleButton) => {
+        toggleButton.click();
+    }, "Dark Mode");
+});
+```
+
+### Do not nest page objects under another page object
+
+Nesting other component objects is supported, but it is highly advised to not nest another page object inside of a page
+object. This breaks flow and logically does not make sense to do.
