@@ -1,5 +1,5 @@
-import {isNil} from "lodash";
-import {clone} from "./utils";
+import { isNil } from "lodash";
+import { clone } from "./utils";
 
 /**
  * Base class for describing page objects and components, which have a collection of element selectors
@@ -94,9 +94,9 @@ export default class ElementCollection {
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
     get container() {
-        return (!isNil(this._scopedIndex)) ?
-            this._baseContainerFn().eq(this._scopedIndex) :
-            this._baseContainerFn().first();
+        return !isNil(this._scopedIndex)
+            ? this._baseContainerFn().eq(this._scopedIndex)
+            : this._baseContainerFn().first();
     }
 
     /**
@@ -158,7 +158,6 @@ export default class ElementCollection {
         baseElement.within(() => fn(nestedObject));
     }
 
-
     /**
      * Useful for when we need to test multiple scoped or indexed ElementCollection instances by setting `_scopedIndex`.
      * for creating element chains. "Cloning" the original allows us to avoid circular dependencies.
@@ -178,5 +177,4 @@ export default class ElementCollection {
     _clone() {
         return this.#clone();
     }
-
 }

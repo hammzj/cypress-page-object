@@ -17,7 +17,7 @@ possible to limit it to what you want!
 class AddressForm extends ElementCollection {
     constructor() {
         //This is the base container function for an "address" form
-        super(() => cy.get('form#address'));
+        super(() => cy.get("form#address"));
     }
 }
 
@@ -25,7 +25,7 @@ class SearchForm extends ElementCollection {
     constructor() {
         //This is the base container function for a "search" form
         //It is different from the above because using just cy.get(`form`) would also return the address form! Not good!
-        super(() => cy.get('form#search-for-location'));
+        super(() => cy.get("form#search-for-location"));
     }
 }
 ```
@@ -44,7 +44,7 @@ camelCase**:
 class AddressForm extends ElementCollection {
     constructor() {
         //This is the base container function for the address form
-        super(() => cy.get('form#address'));
+        super(() => cy.get("form#address"));
     }
 
     get nameDiv() {
@@ -81,7 +81,7 @@ class AddressForm extends ElementCollection {
     //Getters can return many elements at once!
     get fieldErrors() {
         //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
-        //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error. 
+        //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
         //@see https://docs.cypress.io/api/commands/eq
         return this.container.find(`div.error`);
     }
@@ -95,7 +95,6 @@ If multiple element selectors exist, you can limit the scope using parameters.
 For example, finding a radio button in a list of selections:
 
 ```js
-
 class SelectAnShippingOptionObject extends ElementCollection {
     constructor() {
         super(() => cy.get(`form#select-a-shipping-partner`));
@@ -129,7 +128,7 @@ class SearchForm extends ComponentObject {
     }
 
     get inputField() {
-        return this.container.find('input[type="text"]')
+        return this.container.find('input[type="text"]');
     }
 
     get submitButton() {
@@ -147,7 +146,7 @@ class SearchForm extends ComponentObject {
 
 //...
 const searchForm = new SearchForm();
-searchForm.__search('events happening in New York City');
+searchForm.__search("events happening in New York City");
 ```
 
 ## The `ComponentObject` class
@@ -176,8 +175,11 @@ class PaymentTypeButton extends ComponentObject {
         if (buttonText) {
             this.updateBaseContainerFunction = (origFn) => {
                 //Make sure the base container function references the base container again!
-                return origFn.contains('span', buttonText).parents(this.#BASE_CONTAINER_SELECTOR).first();
-            }
+                return origFn
+                    .contains("span", buttonText)
+                    .parents(this.#BASE_CONTAINER_SELECTOR)
+                    .first();
+            };
         }
     }
 }
@@ -202,25 +204,26 @@ class PaymentTypeButton extends ComponentObject {
         if (buttonText != null) {
             //Make sure the base container function references the base container again!
             baseContainerFn = () => {
-                return baseContainerFn().contains('span', buttonText).parents(this.#BASE_CONTAINER_SELECTOR);
-            }
+                return baseContainerFn()
+                    .contains("span", buttonText)
+                    .parents(this.#BASE_CONTAINER_SELECTOR);
+            };
         }
 
         //Then pass it to super
         super(baseContainerFn);
     }
 }
-
 ```
 
-</details> 
+</details>
 
 ## The `PageObject` class
 
 Nesting other component objects is supported, but it is highly advised to not nest another page object inside of a page
 object!
 
-***
+---
 
 ## Notes
 

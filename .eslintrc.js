@@ -2,13 +2,18 @@
 module.exports = {
     env: {
         browser: true,
-        commonjs: true,
         es2021: true,
         node: true,
     },
     extends: ["eslint:recommended", "prettier"],
+    ecmaFeatures: {
+        modules: true,
+        spread: true,
+        restParams: true,
+    },
     parserOptions: {
         ecmaVersion: "latest",
+        sourceType: "module",
     },
     rules: {
         "no-console": "off",

@@ -18,34 +18,34 @@ be written in **SentenceCase**.
 
 It accepts the following parameters:
 
-* `baseElement`: an element selector existing on `this`
-    * Examples:
-        * `this.container`
-        * any static element selector
-* `nestedObject`: a new instance of the nested object class, containing any needed parameters in the constructor
-    * Examples:
-        * a new instance of an `ElementCollection` or `ComponentObject`
-        * `new AccountFormObject()`
-        * `new AlertDialogObject('An error occurred')`: parameterized object
-* fn: this function must take the nestedObject as its parameter, and then it can perform Cypress commands
-    * Examples:
+-   `baseElement`: an element selector existing on `this`
+    -   Examples:
+        -   `this.container`
+        -   any static element selector
+-   `nestedObject`: a new instance of the nested object class, containing any needed parameters in the constructor
+    -   Examples:
+        -   a new instance of an `ElementCollection` or `ComponentObject`
+        -   `new AccountFormObject()`
+        -   `new AlertDialogObject('An error occurred')`: parameterized object
+-   fn: this function must take the nestedObject as its parameter, and then it can perform Cypress commands
+    -   Examples:
 
 ```js
-    function (nestedObject) {
+function fn(nestedObject) {
     //Add cypress commands using the nestedObject here
 }
 
 //or
 (nestedObject) => {
     //Add cypress commands using the nestedObject here
-} 
+};
 ```
 
 ### Example 1: A simple nested component object
 
 ```js
 //"pages/new.account.page.js"
-import AccountFormObject from '../components/account.form.object';
+import AccountFormObject from "../components/account.form.object";
 
 class CreateAccountPage extends PageObject {
     contructor() {
@@ -63,10 +63,10 @@ class CreateAccountPage extends PageObject {
 //Using in a test:
 
 //...
-const userDetails = {username: 'coolusername', pasword: 'abcd1234'};
+const userDetails = { username: "coolusername", pasword: "abcd1234" };
 const createAccountPage = new CreateAccountPage();
-describe('Create Account Page', function () {
-    it('can submit a form with user details', function () {
+describe("Create Account Page", function () {
+    it("can submit a form with user details", function () {
         cy.visit(createAccountPage.url());
 
         //This will submit the form with the given user details
@@ -75,11 +75,9 @@ describe('Create Account Page', function () {
             accountFormObject.submitButton.click();
         });
 
-        cy.url().should('contain.text', '/success');
+        cy.url().should("contain.text", "/success");
     });
 });
-
-
 ```
 
 ### Example 2: Passing parameters to the nested object
@@ -88,7 +86,7 @@ describe('Create Account Page', function () {
 //Example: Selecting a parameterized ComponentObject that exists as a toggle with text
 class ToggleButton extends ComponentObject {
     constructor(buttonText) {
-        super(() => cy.contains('button.toggleButton', buttonText));
+        super(() => cy.contains("button.toggleButton", buttonText));
     }
 }
 
@@ -109,24 +107,24 @@ class SettingsObject extends ComponentObject {
 
 ```js
 //component test file
-describe('test', function () {
-    specify('clicking a toggle button', function () {
+describe("test", function () {
+    specify("clicking a toggle button", function () {
         //Mount is a custom command for mounting a React component for component testing
-        cy.mount(<Settings/>);
+        cy.mount(<Settings />);
 
         const settingsObject = new SettingsObject();
         settingsObject.ToggleButton(function (toggleButton) {
             toggleButton.click();
-        }, 'Dark Mode');
+        }, "Dark Mode");
         settingsObject.ToggleButton(function (toggleButton) {
             toggleButton.click();
-        }, '24 Hour Clock');
+        }, "24 Hour Clock");
 
-        //Assume that a message displays whether a button is turned on 
-        cy.contains(`div`, 'Dark mode enabled').should('exist');
-        cy.contains(`div`, '24 hour clock mode enabled').should('exist');
+        //Assume that a message displays whether a button is turned on
+        cy.contains(`div`, "Dark mode enabled").should("exist");
+        cy.contains(`div`, "24 hour clock mode enabled").should("exist");
     });
-})
+});
 ```
 
 ### Example 3: Passing parameters to both a parameterized base element AND nested object
@@ -141,7 +139,7 @@ the base element command will work just the same!
 
 ```js
 //"pages/new.account.page.js"
-import AccountFormObject from '../components/account.form.object';
+import AccountFormObject from "../components/account.form.object";
 
 class CreateAccountPage extends PageObject {
     constructor() {
@@ -155,11 +153,10 @@ class CreateAccountPage extends PageObject {
 ```
 
 ```js
-
 //Example: Selecting a parameterized ComponentObject that exists as a toggle with text
 class ToggleButton extends ComponentObject {
     constructor(buttonText) {
-        super(() => cy.contains('button.toggleButton', buttonText));
+        super(() => cy.contains("button.toggleButton", buttonText));
     }
 }
 
@@ -183,9 +180,8 @@ Then, you can use them in your test functions as you did before:
 ```js
 const createAccountPage = new CreateAccountPage();
 //This will submit the form with the given user details
-createAccountPage.AccountFormObject(accountFormObject => {
+createAccountPage.AccountFormObject((accountFormObject) => {
     accountFormObject.__fillInDetails(userDetails);
     accountFormObject.submitButton.click();
 });
-
 ```

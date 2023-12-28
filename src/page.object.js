@@ -1,6 +1,5 @@
-import ElementCollection from './element.collection';
-import {isNil} from "lodash";
-import {clone} from "./utils";
+import ElementCollection from "./element.collection";
+import { isNil } from "lodash";
 
 /**
  * A page object is an extension of an ElementCollection that allows associating a URL with a custom path.
@@ -10,8 +9,6 @@ import {clone} from "./utils";
 export default class PageObject extends ElementCollection {
     static #PATH_REPLACEMENT_REGEX = /(?<pathVariable>:\w+)/g;
 
-    #baseUrl = Cypress.config().baseUrl;
-
     /**
      * @example new PageObject(''); //Index page
      * @example new PageObject('/settings/privacy'); //Page with a static path
@@ -20,10 +17,10 @@ export default class PageObject extends ElementCollection {
      * @param path {string} the page path can be set either statically, or with path variables that can be replaced with _customPathUrl()
      * @param baseUrl {string=} In the case that there is page that does not use the base URL, this can be set to reference that page
      */
-    constructor(path = '', baseUrl) {
+    constructor(path = "", baseUrl = Cypress.config().baseUrl) {
         super(() => cy.get(`body`));
-        this.#path = path;
-        if (baseUrl) this.#baseUrl = baseUrl;
+        this._path = path;
+        this._baseUrl = baseUrl;
     }
 
     /**
@@ -32,7 +29,9 @@ export default class PageObject extends ElementCollection {
      * @return pageURL {string}
      */
     url(...pathInputs) {
-        if (pathInputs) {return this.#customPathUrl(...pathInputs)}
+        if (pathInputs) {
+            return this.#customPathUrl(...pathInputs);
+        }
         return this.#urlObject().toString();
     }
 
@@ -50,26 +49,28 @@ export default class PageObject extends ElementCollection {
      * @private
      */
     #customPathUrl(...pathInputs) {
-        const matches = this.#path.match(PageObject.#PATH_REPLACEMENT_REGEX);
+        const matches = this._path.match(PageObject.#PATH_REPLACEMENT_REGEX);
         if (isNil(matches)) {
-            console.error('No path variables exist found for URL path: ' + this.#path);
+            console.error("No path variables exist found for URL path: " + this._path);
             return this.#urlObject().toString();
         }
         //Deep copy the original path
-        let replacedPath = this.#path.repeat(1);
+        let replacedPath = this._path.repeat(1);
         for (const pathVar of matches) {
             const sub = pathInputs.pop();
             if (isNil(sub)) {
-                throw Error('Not enough path variables were supplied, so path cannot be substituted');
+                throw Error(
+                    "Not enough path variables were supplied, so path cannot be substituted"
+                );
             }
             replacedPath = replacedPath.replace(pathVar, sub);
         }
-        console.debug('replacedPath', replacedPath);
+        console.debug("replacedPath", replacedPath);
         return this.#urlObject(replacedPath).toString();
     }
 
-    #urlObject(path = this.#path) {
-        return new URL(path, this.#baseUrl);
+    #urlObject(path = this._path) {
+        return new URL(path, this._baseUrl);
     }
 
     __visit(...pathInputs) {
@@ -78,8 +79,6 @@ export default class PageObject extends ElementCollection {
 
     __assertIsOnPage(...pathInputs) {
         const pageUrl = this.url(...pathInputs);
-        cy.url().should('eq', pageUrl);
+        cy.url().should("eq", pageUrl);
     }
 }
-
-
