@@ -89,14 +89,22 @@ export default class ElementCollection {
     }
 
     /**
-     * Returns the base container of the component/element. If there are more than one instance of the container found, it will return all located instances.
+     * Returns the first base container of the component/element.
      * When `_scopedIndex` is set, then it will only select the `i` indexed container, when expecting multiple to be located.
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
     get container() {
         return (!isNil(this._scopedIndex)) ?
             this._baseContainerFn().eq(this._scopedIndex) :
-            this._baseContainerFn();
+            this._baseContainerFn().first();
+    }
+
+    /**
+     * If there is more than one instance of the container found, this method will return all located instances
+     * @return {*}
+     */
+    getAllContainers() {
+        return this._baseContainerFn();
     }
 
     /**
@@ -143,7 +151,7 @@ export default class ElementCollection {
      */
     _nestedObject(baseElement, nestedObject, fn) {
         //TODO: test this warning
-        //if(nestedObject.prototype.isPrototypeOf('PageObject')){
+        //if(PageObject.prototype.isPrototypeOf(nestedObject)){
         //    throw Error('Cannot nest a PageObject inside of another base ElementCollection instance')
         //}
 
