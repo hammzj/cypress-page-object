@@ -1,4 +1,4 @@
-import {isEqual, isNil} from "lodash";
+import {isNil} from "lodash";
 import {clone} from "./utils";
 
 /**
@@ -89,20 +89,28 @@ export default class ElementCollection {
     }
 
     /**
-     * Returns the base container of the component/element. If there are more than one instance of the container found, it will return all located instances.
+     * Returns the first base container of the component/element.
      * When `_scopedIndex` is set, then it will only select the `i` indexed container, when expecting multiple to be located.
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
     get container() {
         return (!isNil(this._scopedIndex)) ?
             this._baseContainerFn().eq(this._scopedIndex) :
-            this._baseContainerFn();
+            this._baseContainerFn().first();
+    }
+
+    /**
+     * If there is more than one instance of the container found, this method will return all located instances
+     * @return {*}
+     */
+    getAllContainers() {
+        return this._baseContainerFn();
     }
 
     /**
      * A nested object is one that exists within the container of the parent/base object.
      * A nestedObject can also contain its own nestedObjects.
-     * @param baseElement {string|any} an element selector existing on `this`. Can either be a string reference to the name of the element, or the actual element.
+     * @param baseElement {any} an element selector existing on `this`
      * @param nestedObject {ElementCollection|ComponentObject} a `new` instance of the nested object, containing any parameters necessary
      * @param fn {function} this function must take the nestedObject as its parameter, and then it can perform Cypress commands
      * @returns {void}
@@ -143,11 +151,10 @@ export default class ElementCollection {
      */
     _nestedObject(baseElement, nestedObject, fn) {
         //TODO: test this warning
-        //if(nestedObject.prototype.isPrototypeOf('PageObject')){
+        //if(PageObject.prototype.isPrototypeOf(nestedObject)){
         //    throw Error('Cannot nest a PageObject inside of another base ElementCollection instance')
         //}
 
-        if (isEqual(typeof baseElement, 'string')) baseElement = this[baseElement];
         baseElement.within(() => fn(nestedObject));
     }
 

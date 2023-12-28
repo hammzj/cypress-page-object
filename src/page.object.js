@@ -3,7 +3,9 @@ import {isNil} from "lodash";
 import {clone} from "./utils";
 
 /**
- * A PageObject is an instance of an ElementCollection, but allows associating a URL with a custom path t
+ * A page object is an extension of an ElementCollection that allows associating a URL with a custom path.
+ * A page can represent a collection of nested ComponentObjects, individual element selectors without a component
+ * object, or both.
  */
 export default class PageObject extends ElementCollection {
     static #PATH_REPLACEMENT_REGEX = /(?<pathVariable>:\w+)/g;
@@ -30,7 +32,7 @@ export default class PageObject extends ElementCollection {
      * @return pageURL {string}
      */
     url(...pathInputs) {
-        if (pathInputs) {return this._customPathUrl(...pathInputs)}
+        if (pathInputs) {return this.#customPathUrl(...pathInputs)}
         return this.#urlObject().toString();
     }
 
@@ -47,7 +49,7 @@ export default class PageObject extends ElementCollection {
      * this._customPathUrl('1234') => `http://localhost:3000/settings/privacy` //Will also log an error to the console!
      * @private
      */
-    _customPathUrl(...pathInputs) {
+    #customPathUrl(...pathInputs) {
         const matches = this.#path.match(PageObject.#PATH_REPLACEMENT_REGEX);
         if (isNil(matches)) {
             console.error('No path variables exist found for URL path: ' + this.#path);
@@ -68,6 +70,10 @@ export default class PageObject extends ElementCollection {
 
     #urlObject(path = this.#path) {
         return new URL(path, this.#baseUrl);
+    }
+
+    __visit(...pathInputs) {
+        cy.visit(this.url(...pathInputs));
     }
 
     __assertIsOnPage(...pathInputs) {
