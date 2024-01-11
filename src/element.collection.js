@@ -13,7 +13,7 @@ export default class ElementCollection {
      * From this container, all page elements can be assigned individually that chain from either the base container
      * or another element selector within the class. Nested objects are also allowed as long as they chain from another element selector in this class.
      */
-    constructor(baseContainerFn = () => cy.get(`html`)) {
+    constructor(baseContainerFn = () => cy.root()) {
         this._baseContainerFn = baseContainerFn;
     }
 
