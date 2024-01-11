@@ -16,15 +16,20 @@
   "private": false,
   "scripts": {
     "postinstall": "husky install",
-    "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\""
+    "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\"",
+    "dev:cypress:install": "cypress install",
+    "test:cypress:open": "cypress open",
+    "test:cypress:run": "cypress install"
   },
   "dependencies": {
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "cypress": "^13.6.2",
+    "cypress": "latest",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-chai-friendly": "^0.7.4",
+    "eslint-plugin-mocha": "^10.2.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",

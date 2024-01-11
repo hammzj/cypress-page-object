@@ -5,7 +5,12 @@ module.exports = {
         es2021: true,
         node: true,
     },
-    extends: ["eslint:recommended", "prettier"],
+    extends: [
+        "eslint:recommended",
+        "prettier",
+        "plugin:mocha/recommended",
+        "plugin:chai-friendly/recommended",
+    ],
     ecmaFeatures: {
         modules: true,
         spread: true,
@@ -31,5 +36,5 @@ module.exports = {
         "after": "readonly",
         "afterEach": "readonly",
     },
-    plugins: ["prettier"],
+    plugins: ["prettier", "chai-friendly", "mocha"],
 };
