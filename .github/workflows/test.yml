@@ -1,0 +1,20 @@
+name: Cypress testing
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cypress run e2e tests, chrome
+        uses: cypress-io/github-action@v6
+        with:
+          browser: electron
+          build: yarn dev:install-example-website
+          start: yarn dev:start-example-website
+          wait-on: "http://localhost:8080"
