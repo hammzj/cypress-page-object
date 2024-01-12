@@ -1,4 +1,4 @@
-name: Publish package to GitHub Packages
+name: Publish package to NPM
 on:
   workflow_dispatch:
   release:
@@ -17,6 +17,6 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - run: yarn install --frozen-lockfile
-      - run: npm publish
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
