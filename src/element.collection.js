@@ -5,8 +5,6 @@ import { clone } from "./utils";
  * Base class for describing page objects and components, which have a collection of element selectors
  */
 export default class ElementCollection {
-    #clone = clone(this);
-
     /**
      * @param baseContainerFn {function} The base container function returns the container of the element.
      * Each instance of an ElementCollection class should be selectable by a selector that defines the container of the component/page.
@@ -175,6 +173,6 @@ export default class ElementCollection {
      * @private
      */
     _clone() {
-        return this.#clone();
+        return clone(this);
     }
 }
