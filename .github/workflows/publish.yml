@@ -14,9 +14,10 @@ jobs:
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3
         with:
+          always-auth: true
           node-version: '18.x'
           registry-url: 'https://npm.pkg.github.com'
       - run: yarn install --frozen-lockfile
-      - run: yarn publish
+      - run: yarn npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
