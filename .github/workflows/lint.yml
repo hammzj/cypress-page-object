@@ -1,3 +1,5 @@
+name: Eslint
+
 on:
   pull_request:
 
@@ -5,6 +7,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     name: Run eslint
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
   steps:
     - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node-version }}
