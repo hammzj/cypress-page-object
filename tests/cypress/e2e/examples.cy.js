@@ -1,4 +1,4 @@
-const { PageObject, ComponentObject } = require("../../src");
+import { PageObject, ComponentObject } from "../../../src";
 
 describe("Page objects", function () {
     beforeEach(function () {
@@ -66,26 +66,29 @@ describe("Page objects", function () {
             examplePageObject.bannerLink("docs.cypress.io").should("exist");
         });
 
-        specify("filtering getters (alternative to dynamic element selectors)", function () {
-            class ExamplePageObject extends PageObject {
-                constructor() {
-                    super();
+        specify(
+            "[ALTERNATIVE]: filtering getters instead of using dynamic element selectors",
+            function () {
+                class ExamplePageObject extends PageObject {
+                    constructor() {
+                        super();
+                    }
+
+                    get banner() {
+                        return cy.get(`.banner`);
+                    }
+
+                    get bannerLink() {
+                        return this.banner.contains("a");
+                    }
                 }
 
-                get banner() {
-                    return cy.get(`.banner`);
-                }
+                const examplePageObject = new ExamplePageObject();
 
-                get bannerLink() {
-                    return this.banner.contains("a");
-                }
+                //filtering can also be used instead of dynamic element selectors
+                examplePageObject.bannerLink.filter(`:contains("docs.cypress.io")`).should("exist");
             }
-
-            const examplePageObject = new ExamplePageObject();
-
-            //filtering can also be used instead of dynamic element selectors
-            examplePageObject.bannerLink.filter(`:contains("docs.cypress.io")`).should("exist");
-        });
+        );
     });
 
     context("Nested component objects", function () {
@@ -196,8 +199,63 @@ describe("Page objects", function () {
         );
 
         specify(
-            "component objects can nested other component objects using cy.within()",
-            function () {}
+            "[ALTERNATIVE]: component objects can nested other component objects using cy.within()",
+            function () {
+                class CommandsListObject extends ComponentObject {
+                    constructor(sectionTitle) {
+                        super(() => {
+                            this._sectionTitle = sectionTitle;
+                            return cy
+                                .get(".home-list")
+                                .contains("li", this._sectionTitle, { matchCase: true });
+                        });
+                    }
+
+                    get sectionTitleLink() {
+                        return this.container.contains("a", this._sectionTitle, {
+                            matchCase: true,
+                        });
+                    }
+
+                    commandLink(label) {
+                        return this.container
+                            .find("ul > li")
+                            .contains(`a`, label, { matchCase: true });
+                    }
+                }
+
+                class CommandsContainerObject extends ComponentObject {
+                    constructor() {
+                        super(() => {
+                            return cy
+                                .contains(`h2`, "Commands", { matchCase: true })
+                                .parents(".banner-alt")
+                                .next();
+                        });
+                    }
+
+                    get banner() {
+                        return this.container.prev();
+                    }
+
+                    QueryingCommandsListObject(fn) {
+                        //functionally equivalent to using "this._nestedObject"
+                        this.container.within(() => fn(new CommandsListObject("Querying")));
+                    }
+                }
+
+                const commandsContainerObject = new CommandsContainerObject();
+
+                commandsContainerObject.banner.should("contain.text", "Commands");
+
+                commandsContainerObject.QueryingCommandsListObject((nestedObject) => {
+                    nestedObject.sectionTitleLink.should("have.text", "Querying");
+                    nestedObject.commandLink("get").should("exist");
+                    nestedObject.commandLink("contains").should("exist");
+                    nestedObject.commandLink("within").should("exist");
+                    nestedObject.commandLink("root").should("exist");
+                });
+            }
         );
 
         specify("nested component objects can be parameterized", function () {});
