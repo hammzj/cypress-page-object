@@ -2,6 +2,52 @@
 
 A set of template classes and guides to help with developing component and page objects in Cypress.
 
+To use,
+
+```
+#https://www.npmjs.com/package/cypress-component-object
+yarn install cypress-component-object
+```
+
+```js
+import { PageObject, ComponentObject } from 'cypress-component-object';
+
+class FooterObject extends ComponentObject {
+    constructor() {
+        super(() => cy.get(`footer`));
+    }
+    
+    get copyright() {
+        return this.container.find(`p.MuiTypography-root`);
+    }
+
+}
+
+class ExamplePageObject extends PageObject {
+    constructor() {
+        super();
+    }
+
+    get appBar() {
+        return cy.get(`.MuiAppBar-root`);
+    }
+
+    appLink(label) {
+        return this.appBar.contains("a.MuiLink-root", label);
+    }
+
+    FooterObject(fn) {
+        this._nestedObject(this.container, new FooterObject(), fn);
+    }
+}
+
+const examplePageObject = new ExamplePageObject();
+examplePageObject.appLink('Features').should("exist");
+examplePageObject.FooterObject(footerObject => {
+   footerObject.copyright.should('have.text', 'Copyright @2024'); 
+});
+```
+
 ## The base class: `ElementCollection`
 
 An "element collection" is what the name implies: it is a collection of element selectors, class properties, utility
