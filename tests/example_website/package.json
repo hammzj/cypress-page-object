@@ -1,0 +1,25 @@
+{
+  "name": "material-ui-gatsby",
+  "version": "5.0.0",
+  "private": true,
+  "browserslist": [
+    ">0.25%",
+    "not dead"
+  ],
+  "dependencies": {
+    "@emotion/react": "11.11.3",
+    "@emotion/server": "11.11.0",
+    "@emotion/styled": "11.11.0",
+    "@mui/icons-material": "^5.15.4",
+    "@mui/material": "5.15.4",
+    "gatsby": "5.13.1",
+    "gatsby-plugin-react-helmet": "6.13.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-helmet": "6.1.0"
+  },
+  "scripts": {
+    "develop": "gatsby develop",
+    "build": "gatsby build"
+  }
+}
