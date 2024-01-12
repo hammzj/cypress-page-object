@@ -1,4 +1,4 @@
-name: Publish package to NPM
+name: Publish package
 on:
   workflow_dispatch:
   release:
@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: 'https://npm.pkg.github.com'
       - run: yarn install --frozen-lockfile
       - run: yarn publish
         env:
