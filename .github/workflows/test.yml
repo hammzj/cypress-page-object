@@ -17,4 +17,4 @@ jobs:
           browser: electron
           build: yarn dev:install-example-website
           start: yarn dev:start-example-website
-          wait-on: "http://localhost:8080/"
+          wait-on: "http://localhost:8000/"
