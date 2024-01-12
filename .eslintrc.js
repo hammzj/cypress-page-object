@@ -1,11 +1,12 @@
 //@see https://dev.to/studio_m_song/how-to-make-eslint-work-with-prettier-avoiding-conflicts-and-problems-57pi
 module.exports = {
+    ignorePatterns: ["tests/example_website/**/*"],
     env: {
         browser: true,
         es2021: true,
         node: true,
     },
-    extends: ["eslint:recommended", "prettier"],
+    extends: ["eslint:recommended", "prettier", "plugin:mocha/recommended", "plugin:chai-friendly/recommended"],
     ecmaFeatures: {
         modules: true,
         spread: true,
@@ -31,5 +32,5 @@ module.exports = {
         "after": "readonly",
         "afterEach": "readonly",
     },
-    plugins: ["prettier"],
+    plugins: ["prettier", "chai-friendly", "mocha"],
 };

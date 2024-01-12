@@ -175,10 +175,7 @@ class PaymentTypeButton extends ComponentObject {
         if (buttonText) {
             this.updateBaseContainerFunction = (origFn) => {
                 //Make sure the base container function references the base container again!
-                return origFn
-                    .contains("span", buttonText)
-                    .parents(this.#BASE_CONTAINER_SELECTOR)
-                    .first();
+                return origFn.contains("span", buttonText).parents(this.#BASE_CONTAINER_SELECTOR).first();
             };
         }
     }
@@ -204,9 +201,7 @@ class PaymentTypeButton extends ComponentObject {
         if (buttonText != null) {
             //Make sure the base container function references the base container again!
             baseContainerFn = () => {
-                return baseContainerFn()
-                    .contains("span", buttonText)
-                    .parents(this.#BASE_CONTAINER_SELECTOR);
+                return baseContainerFn().contains("span", buttonText).parents(this.#BASE_CONTAINER_SELECTOR);
             };
         }
 
@@ -264,11 +259,39 @@ privacySettingsPage._customPathUrl("1234"); //=> "http://localhost:3000/settings
 
 ---
 
+## Development
+
+### Example tests
+
+Examples of using page objects and component objects can be found in `/tests/cypress/e2e`. The spec contains many
+guidelines and different ways for how you can create meaningful test classes for `PageObject` and `ComponentObject` types.
+It is directly run in Cypress to see how it works in action.
+
+The tests use a bundled example website built with React, MaterialUI, and Gatsby, that must have its own dependencies
+installed. To be able to run the example tests, do the following:
+
+```shell
+# Install Cypress
+yarn dev:cypress:install
+
+# Installs website dependencies under /tests/example_website
+yarn dev:install-example-website
+
+# Website is served at "http://localhost:8000/"
+# This must stay active while testing is being performed!
+yarn dev:start-example-website
+
+# Opens Cypress: you can now view the tests in the testrunner!
+yarn test:cypress:open:e2e
+
+# After testing, end the server with "Ctrl + C"
+```
+
 ## Notes
 
 Cypress advises
 using [App Actions](https://www.cypress.io/blog/2019/01/03/stop-using-page-objects-and-start-using-app-actions), but in
 my time working with Cypress, I've found app actions can actually be used _within_ page objects! Actions that occur
 within a page can be contained in the `PageObject` class, and actions that navigate through multiple `PageObject`
-or `ComponentObject` instances can exist as organized helper functions within your application. However, the code styling
-and preference is up to you!
+or `ComponentObject` instances can exist as organized helper functions within your application. However, the code
+styling and preference is up to you!

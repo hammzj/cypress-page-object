@@ -1,6 +1,6 @@
 {
   "name": "cypress-page-object",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A set of template classes and guides to help with developing page objects in Cypress.",
   "keywords": [
     "cypress",
@@ -11,20 +11,37 @@
   ],
   "main": "index.js",
   "repository": "https://github.com/hammzj/cypress-page-object.git",
+  "bugs": {
+    "url": "https://github.com/hammzj/cypress-page-object/issues"
+  },
+  "files": [
+    "src/",
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
   "author": "Zachary Hamm <zjhamm304+github@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
     "postinstall": "husky install",
-    "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\""
+    "dev:lint": "eslint . --ext .js,.ts",
+    "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\"",
+    "dev:cypress:install": "cypress install",
+    "dev:install-example-website": "yarn install --cwd ./tests/example_website",
+    "dev:start-example-website": "cd ./tests/example_website && yarn develop",
+    "test:cypress:open:e2e": "cypress open --e2e --browser electron",
+    "test:cypress:run:e2e": "cypress run --e2e  --browser electron"
   },
   "dependencies": {
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "cypress": "^13.6.2",
+    "cypress": "latest",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-chai-friendly": "^0.7.4",
+    "eslint-plugin-mocha": "^10.2.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
