@@ -684,7 +684,6 @@ describe("Page objects", function () {
         cy.log("This is a full example of putting it all together");
         const examplePageObject = new ExamplePageObject();
         examplePageObject.AppBar((appBar) => {
-            appBar.__assertExists();
             appBar.loginButton.should("exist");
             appBar.link("Features").should("exist");
             appBar.link("Enterprise").should("exist");
@@ -717,6 +716,62 @@ describe("Page objects", function () {
             footerObject.LinkListObject("Company", (linkListObject) => {
                 linkListObject.__assertLinksInOrder("Team", "History", "Contact us", "Locations");
             });
+        });
+    });
+
+    context("class app actions", function () {
+        specify("__assertIsOnPage", function () {
+            class ExamplePageObject extends PageObject {
+                constructor() {
+                    super("/");
+                }
+            }
+
+            const examplePageObject = new ExamplePageObject();
+            examplePageObject.__assertIsOnPage();
+        });
+
+        specify(`"url" returns the url specified for the page object`, function () {
+            class ExamplePageObject extends PageObject {
+                constructor(path) {
+                    super(path);
+                }
+            }
+
+            const examplePageObject = new ExamplePageObject();
+            expect(examplePageObject.url()).to.eq(Cypress.config().baseUrl);
+
+            const examplePageObjectWithPath = new ExamplePageObject("/about");
+            expect(examplePageObjectWithPath.url()).to.eq(new URL("/about", Cypress.config().baseUrl).toString());
+        });
+
+        specify(`path variables can be set using path inputs`, function () {
+            class ExamplePageObject extends PageObject {
+                constructor(path) {
+                    super(path);
+                }
+            }
+
+            const examplePageObjectWithNoInputs = new ExamplePageObject(`/user`);
+            expect(examplePageObjectWithNoInputs.url("1234")).to.eq(
+                new URL("/user", Cypress.config().baseUrl).toString()
+            );
+
+            const examplePageObjectWithSingleInput = new ExamplePageObject(`/user/:userId`);
+            expect(examplePageObjectWithSingleInput.url("1234")).to.eq(
+                new URL("/user/1234", Cypress.config().baseUrl).toString()
+            );
+
+            const examplePageObjectWithMultipleInputs = new ExamplePageObject(`/user/:userId/blog/:blogId`);
+            expect(examplePageObjectWithMultipleInputs.url("1234", "abcd")).to.eq(
+                new URL("/user/1234/blog/abcd", Cypress.config().baseUrl).toString()
+            );
+            expect(examplePageObjectWithMultipleInputs.url("1234", "abcd", "WXYZ")).to.eq(
+                new URL("/user/1234/blog/abcd", Cypress.config().baseUrl).toString()
+            );
+            expect(() => examplePageObjectWithMultipleInputs.url("1234")).to.throw(
+                "Not enough path variables were supplied, so path cannot be substituted"
+            );
         });
     });
 });

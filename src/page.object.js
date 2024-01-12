@@ -1,6 +1,13 @@
 import ElementCollection from "./element.collection";
 import { isNil } from "lodash";
 
+class InsufficientPathVariablesError extends Error {
+    constructor() {
+        super("Not enough path variables were supplied, so path cannot be substituted"); // (1)
+        this.name = "InsufficientPathVariablesError"; // (2)
+    }
+}
+
 /**
  * A page object is an extension of an ElementCollection that allows associating a URL with a custom path.
  * A page can represent a collection of nested ComponentObjects, individual element selectors without a component
@@ -57,11 +64,9 @@ export default class PageObject extends ElementCollection {
         //Deep copy the original path
         let replacedPath = this._path.repeat(1);
         for (const pathVar of matches) {
-            const sub = pathInputs.pop();
+            const sub = pathInputs.shift();
             if (isNil(sub)) {
-                throw Error(
-                    "Not enough path variables were supplied, so path cannot be substituted"
-                );
+                throw new InsufficientPathVariablesError();
             }
             replacedPath = replacedPath.replace(pathVar, sub);
         }
