@@ -1,7 +1,7 @@
 {
-  "name": "cypress-page-object",
+  "name": "cypress-component-object",
   "version": "1.0.0",
-  "description": "A set of template classes and guides to help with developing page objects in Cypress.",
+  "description": "A set of template classes and guides to help with developing component and page objects in Cypress.",
   "keywords": [
     "cypress",
     "component testing",
@@ -10,9 +10,9 @@
     "test automation"
   ],
   "main": "index.js",
-  "repository": "https://github.com/hammzj/cypress-page-object.git",
+  "repository": "https://github.com/hammzj/cypress-component-object.git",
   "bugs": {
-    "url": "https://github.com/hammzj/cypress-page-object/issues"
+    "url": "https://github.com/hammzj/cypress-component-object/issues"
   },
   "files": [
     "src/",

@@ -1,6 +1,6 @@
-# cypress-page-object
+# cypress-component-object
 
-A set of template classes and guides to help with developing page objects in Cypress.
+A set of template classes and guides to help with developing component and page objects in Cypress.
 
 ## The base class: `ElementCollection`
 
