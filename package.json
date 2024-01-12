@@ -1,6 +1,6 @@
 {
   "name": "cypress-page-object",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A set of template classes and guides to help with developing page objects in Cypress.",
   "keywords": [
     "cypress",
