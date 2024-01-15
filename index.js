@@ -1,3 +1,4 @@
-import * as src from "./src";
+import * as CypressPageObject from "./src";
 
-export default src;
+export { CypressPageObject };
+export default CypressPageObject;
