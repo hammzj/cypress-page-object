@@ -1,16 +1,13 @@
-# cypress-component-object
+# cypress-page-object
 
 A set of template classes and guides to help with developing component and page objects in Cypress.
 
-To use,
-
-```
-#https://www.npmjs.com/package/cypress-component-object
-yarn install cypress-component-object
-```
-
 ```js
-import { PageObject, ComponentObject } from 'cypress-component-object';
+import {
+    ElementCollection, //The generic class for defining element selectors
+    ComponentObject, //Represents individual components made of element selectors and nested component objects
+    PageObject, //Represents a webpage and its collection of both element selectors and component objects
+}  from "@hammzj/cypress-page-object";
 
 class FooterObject extends ComponentObject {
     constructor() {
@@ -60,6 +57,8 @@ should only find a single _type_ of component on the page, so the base container
 possible to limit it to what you want!
 
 ```js
+const { ElementCollection } = require("@hammzj/cypress-page-object");
+
 class AddressForm extends ElementCollection {
     constructor() {
         //This is the base container function for an "address" form
@@ -87,41 +86,19 @@ another element selector in the collection.
 camelCase**:
 
 ```js
-class AddressForm extends ElementCollection {
+class NewUserForm extends ElementCollection {
     constructor() {
         //This is the base container function for the address form
-        super(() => cy.get("form#address"));
+        super(() => cy.get("form#new-user"));
     }
 
-    get nameDiv() {
-        //An element selector chained from the base container
-        //In nearly ALL cases, you should be chaining off of the container!
-        return this.container.find(`div.nameContainer`);
-    }
-
-    get firstNameField() {
+    get usernameField() {
         //An element selector chained from another element selector -- selects the first found "input"
-        return this.nameDiv().find(`input`).first();
+        return this.container.find(`input`).first();
     }
 
-    get lastNameField() {
-        return this.firstNameField.next();
-    }
-
-    get cityField() {
-        return this.container.find(`input#city`);
-    }
-
-    get stateField() {
-        return this.container.find(`input#state`);
-    }
-
-    get postalCodeField() {
-        return this.container.contains(`input#postalCode`);
-    }
-
-    get submitButton() {
-        return this.container.find(`button[type="submit"}`);
+    get passwordField() {
+        return this.usernameField.next();
     }
 
     //Getters can return many elements at once!
@@ -168,6 +145,8 @@ Element collections reserve utility methods to be provided with single underscor
 **When adding an app action, use double underscores, like `__fillInForm(props)`**.
 
 ```js
+const { ComponentObject } = require("@hammzj/cypress-page-object");
+
 class SearchForm extends ComponentObject {
     constructor() {
         super(() => cy.get(`form#location-search-form`));
@@ -211,8 +190,10 @@ it.
 parameterized constructor, or elsewhere in your test framework:
 
 ```js
-//Select only the button with the specified label text
+const { ComponentObject } = require("@hammzj/cypress-page-object");
+
 class PaymentTypeButton extends ComponentObject {
+    //Select only the button with the specified label text
     #BASE_CONTAINER_SELECTOR = 'button[id="payment-type"]';
 
     constructor(buttonText) {
@@ -237,6 +218,8 @@ Before calling `super` in the constructor, you can set the contents of the base 
 to `super`:
 
 ```js
+const { ComponentObject } = require("@hammzj/cypress-page-object");
+
 //Select only the button with the specified label text
 class PaymentTypeButton extends ComponentObject {
     #BASE_CONTAINER_SELECTOR = 'button[id="payment-type"]';
@@ -275,6 +258,7 @@ exactly every input that needs substitution.
 #### Example 1: a path with variables to replace
 
 ```js
+const { PageObject } = require("@hammzj/cypress-page-object");
 const baseUrl = `http://localhost:3000`;
 
 class UserPostsPage extends PageObject {
@@ -290,6 +274,7 @@ userPostsPage._customPathUrl("1234", "post-9876"); //=> "http://localhost:3000/u
 #### Example 2: a path without variables
 
 ```js
+const { PageObject } = require("@hammzj/cypress-page-object");
 const baseUrl = `http://localhost:3000`;
 
 class PrivacySettingsPage extends PageObject {
@@ -310,8 +295,8 @@ privacySettingsPage._customPathUrl("1234"); //=> "http://localhost:3000/settings
 ### Example tests
 
 Examples of using page objects and component objects can be found in `/tests/cypress/e2e`. The spec contains many
-guidelines and different ways for how you can create meaningful test classes for `PageObject` and `ComponentObject` types.
-It is directly run in Cypress to see how it works in action.
+guidelines and different ways for how you can create meaningful test classes for `PageObject` and `ComponentObject`
+types. It is directly run in Cypress to see how it works in action.
 
 The tests use a bundled example website built with React, MaterialUI, and Gatsby, that must have its own dependencies
 installed. To be able to run the example tests, do the following:

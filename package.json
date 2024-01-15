@@ -1,7 +1,17 @@
 {
-  "name": "cypress-component-object",
+  "name": "@hammzj/cypress-page-object",
   "version": "1.0.0",
   "description": "A set of template classes and guides to help with developing component and page objects in Cypress.",
+  "author": "Zachary Hamm <zjhamm304+github@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hammzj/cypress-page-object.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hammzj/cypress-page-object/issues"
+  },
   "keywords": [
     "cypress",
     "component testing",
@@ -10,19 +20,12 @@
     "test automation"
   ],
   "main": "index.js",
-  "repository": "https://github.com/hammzj/cypress-component-object.git",
-  "bugs": {
-    "url": "https://github.com/hammzj/cypress-component-object/issues"
-  },
   "files": [
     "src/",
     "index.js",
     "LICENSE",
     "README.md"
   ],
-  "author": "Zachary Hamm <zjhamm304+github@gmail.com>",
-  "license": "MIT",
-  "private": false,
   "scripts": {
     "postinstall": "husky install",
     "dev:lint": "eslint . --ext .js,.ts",
