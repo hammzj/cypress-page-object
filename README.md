@@ -9,6 +9,10 @@ import {
     PageObject, //Represents a webpage and its collection of both element selectors and component objects
 }  from "@hammzj/cypress-page-object";
 
+//Or CJS
+//import CypressPageObject from "@hammzj/cypress-page-object"
+//const {ElementCollection} = CypressPageObject;
+
 class FooterObject extends ComponentObject {
     constructor() {
         super(() => cy.get(`footer`));
