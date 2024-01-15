@@ -1,6 +1,6 @@
 {
   "name": "@hammzj/cypress-page-object",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A set of template classes and guides to help with developing component and page objects in Cypress.",
   "author": "Zachary Hamm <zjhamm304+github@gmail.com>",
   "license": "MIT",
@@ -27,9 +27,9 @@
     "README.md"
   ],
   "scripts": {
-    "postinstall": "husky install",
     "dev:lint": "eslint . --ext .js,.ts",
     "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\"",
+    "dev:install-hooks": "husky install",
     "dev:cypress:install": "cypress install",
     "dev:install-example-website": "yarn install --cwd ./tests/example_website",
     "dev:start-example-website": "cd ./tests/example_website && yarn develop",
