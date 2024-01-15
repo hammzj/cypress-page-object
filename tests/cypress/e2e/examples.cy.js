@@ -1,4 +1,4 @@
-import { PageObject, ComponentObject } from "cypress-page-object";
+import { PageObject, ComponentObject } from "../../../src";
 
 class FooterObject extends ComponentObject {
     constructor() {
