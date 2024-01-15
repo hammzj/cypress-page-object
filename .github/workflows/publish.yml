@@ -1,22 +1,20 @@
-name: Publish package
+name: Publish Package to npmjs
 on:
   workflow_dispatch:
   release:
-    types: [ published ]
+    types: [published]
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v4
-      # Setup .npmrc file to publish to GitHub Packages
+      # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-          registry-url: 'https://npm.pkg.github.com'
-      - run: yarn install --frozen-lockfile
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@hammzj'
+      - run: yarn
       - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
