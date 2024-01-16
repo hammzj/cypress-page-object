@@ -49,6 +49,21 @@ examplePageObject.FooterObject(footerObject => {
 });
 ```
 
+## Installation
+
+This package is hosted on the GitHub NPM package repository. Please add or update your `.npmrc` file with the following:
+
+```
+@hammzj:registry=https://npm.pkg.github.com
+```
+
+Then, install as normal:
+```
+npm install @hammzj/cypress-page-object
+#or
+yarn add @hammzj/cypress-page-object
+```
+
 ## The base class: `ElementCollection`
 
 An "element collection" is what the name implies: it is a collection of element selectors, class properties, utility
