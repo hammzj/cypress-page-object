@@ -84,6 +84,7 @@ export default class PageObject extends ElementCollection {
 
     __assertIsOnPage(...pathInputs) {
         const pageUrl = this.url(...pathInputs);
+        cy.log(cy.url());
         cy.url().should("eq", pageUrl);
     }
 }

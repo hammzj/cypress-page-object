@@ -88,7 +88,8 @@ export default class ElementCollection {
 
     /**
      * Returns the first base container of the component/element.
-     * When `_scopedIndex` is set, then it will only select the `i` indexed container, when expecting multiple to be located.
+     * When `_scopedIndex` is set, then it will only return the "i"-indexed container,
+     * when expecting multiple elements to be located.
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
     get container() {
