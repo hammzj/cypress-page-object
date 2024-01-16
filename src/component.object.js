@@ -1,4 +1,4 @@
-import { isEqual } from "lodash";
+import { gt, isEqual } from "lodash";
 import ElementCollection from "./element.collection";
 
 /**
@@ -11,9 +11,33 @@ export default class ComponentObject extends ElementCollection {
         super(baseContainerFn);
     }
 
-    //TODO: should there be specific methods for ComponentObjects?
+    /**
+     * Expects that there are no instances of the component found.
+     * When calling this method, it is best to ensure that the baseContainerFn only uses a single Cypress command;
+     * using multiple chained commands may cause this to fail if an earlier selector in the base container function cannot be found.
+     */
+    __assertNoneExist() {
+        this.getAllContainers().should("not.exist");
+    }
 
     __assertExists(expectation = true) {
-        this.container.should(isEqual(expectation, false) ? "not.exist" : "exist");
+        if (isEqual(expectation, false)) {
+            if (gt(this._scopedIndex, 0)) {
+                /*
+                The scoped index is set above 0 (i.e., it is not the first-found instance).
+                Make sure at least a base container exists first,
+                then check that the specified instance does not exist
+                 */
+                cy.log(
+                    "Checking that at least one instance exists, then will check scoped index at " + this._scopedIndex
+                );
+                this._baseContainerFn().should("exist"); //At least one instance exists
+                this.container.should("not.exist"); //The specified instance does not exist
+            } else {
+                this._baseContainerFn().should("not.exist");
+            }
+        } else {
+            this.container.should("exist");
+        }
     }
 }
