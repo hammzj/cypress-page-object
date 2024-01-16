@@ -66,6 +66,8 @@ yarn add @hammzj/cypress-page-object
 
 ## The base class: `ElementCollection`
 
+*Note: All examples below have selectors for [MaterialUI](https://mui.com/material-ui/) root classes.*
+
 An "element collection" is what the name implies: it is a collection of element selectors, class properties, utility
 functions, and application actions, that define how Cypress can interact with a component or page in an application.
 
