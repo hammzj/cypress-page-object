@@ -1,5 +1,5 @@
 import { gt, isEqual } from "lodash";
-import ElementCollection from "./element.collection";
+import ElementCollection, { BaseContainerFunction } from "./element.collection";
 
 /**
  * A component object is useful when building websites using components.
@@ -7,7 +7,7 @@ import ElementCollection from "./element.collection";
  * other nested component objects themselves.
  */
 export default class ComponentObject extends ElementCollection {
-    constructor(baseContainerFn) {
+    constructor(baseContainerFn: BaseContainerFunction) {
         super(baseContainerFn);
     }
 

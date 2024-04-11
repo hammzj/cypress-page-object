@@ -104,7 +104,7 @@ export default class ElementCollection {
      * when expecting multiple elements to be located.
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
-    get container() {
+    get container(): Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>> {
         return !isNil(this._scopedIndex)
             ? this._baseContainerFn().eq(this._scopedIndex)
             : this._baseContainerFn().first();
@@ -185,7 +185,7 @@ export default class ElementCollection {
      });
      * @private
      */
-    _clone() {
+    _clone(): ElementCollection {
         return clone(this);
     }
 }
