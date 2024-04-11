@@ -7,7 +7,7 @@ import {
     ElementCollection, //The generic class for defining element selectors
     ComponentObject, //Represents individual components made of element selectors and nested component objects
     PageObject, //Represents a webpage and its collection of both element selectors and component objects
-}  from "@hammzj/cypress-page-object";
+} from "@hammzj/cypress-page-object";
 
 //Or CJS
 //import CypressPageObject from "@hammzj/cypress-page-object"
@@ -17,11 +17,10 @@ class FooterObject extends ComponentObject {
     constructor() {
         super(() => cy.get(`footer`));
     }
-    
+
     get copyright() {
         return this.container.find(`p.MuiTypography-root`);
     }
-
 }
 
 class ExamplePageObject extends PageObject {
@@ -43,9 +42,9 @@ class ExamplePageObject extends PageObject {
 }
 
 const examplePageObject = new ExamplePageObject();
-examplePageObject.appLink('Features').should("exist");
-examplePageObject.FooterObject(footerObject => {
-   footerObject.copyright.should('have.text', 'Copyright @2024'); 
+examplePageObject.appLink("Features").should("exist");
+examplePageObject.FooterObject((footerObject) => {
+    footerObject.copyright.should("have.text", "Copyright @2024");
 });
 ```
 
@@ -58,6 +57,7 @@ This package is hosted on the GitHub NPM package repository. Please add or updat
 ```
 
 Then, install as normal:
+
 ```
 npm install @hammzj/cypress-page-object
 #or
@@ -66,7 +66,7 @@ yarn add @hammzj/cypress-page-object
 
 ## The base class: `ElementCollection`
 
-*Note: All examples below have selectors for [MaterialUI](https://mui.com/material-ui/) root classes.*
+_Note: All examples below have selectors for [MaterialUI](https://mui.com/material-ui/) root classes._
 
 An "element collection" is what the name implies: it is a collection of element selectors, class properties, utility
 functions, and application actions, that define how Cypress can interact with a component or page in an application.

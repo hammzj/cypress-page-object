@@ -1,10 +1,10 @@
 import { isNil } from "lodash";
 import { clone } from "./utils";
 
-export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>
+export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>;
 
 export type Elements = {
-    [key: string]: (...params: any) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>;
+    [key: string]: (...params: never) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>;
 };
 
 /**
@@ -46,9 +46,9 @@ export default class ElementCollection {
      //This nested object can produce more than one found instance of a button, so scoping by index is necessary.
      const buttonLabels = ['foo', 'bar', 'baz', 'x'];
      buttonLabels.forEach((text, i) => {
-     genericEC.ListButtonObject(lbo => {
-     lbo.index = i; //Individually iterate over each button
-     lbo.should('have.text', text); //Checks each button to have the correct text
+     genericEC.ListButtonObject(listButtonObject => {
+     listButtonObject.index = i; //Individually iterate over each button
+     listButtonObject.should('have.text', text); //Checks each button to have the correct text
      });
      cy.wait(50);
      });
@@ -94,7 +94,7 @@ export default class ElementCollection {
      *     super(containerFn);
      */
     set updateBaseContainerFunction(
-        newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>,
+        newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>
     ) {
         const origBaseContainerFn = this._baseContainerFn;
         // @ts-ignore
@@ -109,9 +109,9 @@ export default class ElementCollection {
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
     container(): Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>> {
-        return !isNil(this._scopedIndex)
-            ? this._baseContainerFn().eq(this._scopedIndex)
-            : this._baseContainerFn().first();
+        return !isNil(this._scopedIndex) ?
+                this._baseContainerFn().eq(this._scopedIndex)
+            :   this._baseContainerFn().first();
     }
 
     /**
@@ -133,35 +133,35 @@ export default class ElementCollection {
      *
      * @example <summary>Submitting a form with data that exists within a PageObject</summary>
      *  const newAccountPage = new NewAccountPage();
-     *  newAccountPage.AccountFormObject(accountFormObject => {
-     *    accountFormObject.__fillInDetails(userDetails);
-     *    accountFormObject.submitButton.click();
+     *  newAccountPage.components.AccountFormObject(accountFormObject => {
+     *    accountFormObject.fillInDetails(userDetails);
+     *    accountFormObject.elements.submitButton().click();
      *  });
      *
      * @example <summary>Selecting a parameterized ComponentObject that exists as a radio button with text </summary>
      * //RadioSelectionFormObject
      * RadioButtonObject(fn, buttonText) {
-     *     this._nestedObject(this.form, new RadioButtonObject(buttonText), fn);
+     *     this._nestedObject(this.elements.form(), new RadioButtonObject(buttonText), fn);
      * }
      *
      * //...
      *  const radioSelectionFormObject = new RadioSelectionFormObject();
      *
      *  //Select radio with "foo"
-     *  radioSelectionFormObject.RadioButtonObject(rbo => {
-     *    rbo.click();
+     *  radioSelectionFormObject.components.RadioButtonObject(rbo => {
+     *    rbo.container().click();
      *  }, 'foo');
      *
      *
      * //Select radio with "bar"
      *  radioSelectionFormObject.RadioButtonObject(rbo => {
-     *    rbo.click();
+     *    rrbo.container().click();
      *  }, 'bar');
      *
      * @example <summary>Nesting an element without using this function</summary>
      * //RadioSelectionFormObject
      * RadioButtonObject(fn, buttonText) {
-     *   this.form.within(() => fn(new RadioButtonObject(buttonText)));
+     *   this.elements.form().within(() => fn(new RadioButtonObject(buttonText)));
      * }
      */
     _nestedObject(baseElement, nestedObject, fn) {
@@ -178,13 +178,13 @@ export default class ElementCollection {
      * for creating element chains. "Cloning" the original allows us to avoid circular dependencies.
      * @return clonedSelf {ElementCollection}
      * @example <summary>Testing two different ElementCollection instances of a Material UI Accordion</summary>
-     *      scopedObject.AccordionObject(accordionObj => {
+     *      scopedObject.components.AccordionObject(accordionObj => {
      const firstAccordion = clone(accordionObj);
      firstAccordion._scopedIndex = 0;
      const secondAccordion = clone(accordionObj);
      secondAccordion._scopedIndex = 1;
-     firstAccordion.click();
-     firstAccordion.container.should('have.class', 'Mui-expanded');
+     firstAccordion.container().click();
+     firstAccordion.container().should('have.class', 'Mui-expanded');
      secondAccordion.should('have.not.class', 'Mui-expanded');
      });
      * @private

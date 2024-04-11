@@ -2,11 +2,10 @@ import ElementCollection from "./element.collection";
 import { isNil } from "lodash";
 
 export interface IPageMetadata {
-    baseUrl: string
-    path: string | ""
-    title?: string,
-
-    [key: string]: any
+    baseUrl: string;
+    path: string | "";
+    title?: string;
+    [key: string]: any;
 }
 
 class InsufficientPathVariablesError extends Error {
@@ -56,7 +55,8 @@ export default class PageObject extends ElementCollection {
     #customPathUrl(...pathInputs: string[]) {
         const matches = this.metadata.path.match(PageObject.#PATH_REPLACEMENT_REGEX);
         if (isNil(matches)) {
-            if (process.env.CYPRESS_PAGE_OBJECT_DEBUG) console.error("No path variables exist found for URL path: " + this.metadata.path);
+            if (process.env.CYPRESS_PAGE_OBJECT_DEBUG)
+                console.error("No path variables exist found for URL path: " + this.metadata.path);
             return this.#urlObject().toString();
         }
         //Deep copy the original path
@@ -82,9 +82,7 @@ export default class PageObject extends ElementCollection {
      * @return pageURL {string}
      */
     url(...pathInputs: string[]): string {
-        return (pathInputs) ?
-            this.#customPathUrl(...pathInputs) :
-            this.#urlObject().toString();
+        return pathInputs ? this.#customPathUrl(...pathInputs) : this.#urlObject().toString();
     }
 
     visit(...pathInputs: string[]): void {

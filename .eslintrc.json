@@ -57,8 +57,8 @@
       "error",
       "type-annotation"
     ],
+    "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/no-implicit-any": "warn",
     "no-console": "off",
     "no-case-declarations": "warn",
     "no-prototype-builtins": "off",

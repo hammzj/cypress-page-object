@@ -1,1 +1,1 @@
-export const clone = (original: never): never => Object.assign(Object.create(Object.getPrototypeOf(original)), original);
+export const clone = (original: any): any => Object.assign(Object.create(Object.getPrototypeOf(original)), original);
