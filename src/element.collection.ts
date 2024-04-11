@@ -1,17 +1,28 @@
 import { isNil } from "lodash";
 import { clone } from "./utils";
 
+export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>
+
+export type Elements = {
+    [key: string]: (...params: any) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>;
+};
+
 /**
  * Base class for describing page objects and components, which have a collection of element selectors
  */
 export default class ElementCollection {
+    protected _baseContainerFn: BaseContainerFunction;
+    protected _scopedIndex?: number;
+    public elements: Elements = {};
+    public components: Elements = {};
+
     /**
      * @param baseContainerFn {function} The base container function returns the container of the element.
      * Each instance of an ElementCollection class should be selectable by a selector that defines the container of the component/page.
      * From this container, all page elements can be assigned individually that chain from either the base container
      * or another element selector within the class. Nested objects are also allowed as long as they chain from another element selector in this class.
      */
-    constructor(baseContainerFn = () => cy.root()) {
+    constructor(baseContainerFn: BaseContainerFunction = () => cy.root()) {
         this._baseContainerFn = baseContainerFn;
     }
 
@@ -33,14 +44,14 @@ export default class ElementCollection {
      //This nested object can produce more than one found instance of a button, so scoping by index is necessary.
      const buttonLabels = ['foo', 'bar', 'baz', 'x'];
      buttonLabels.forEach((text, i) => {
-        genericEC.ListButtonObject(lbo => {
-           lbo.index = i; //Individually iterate over each button
-           lbo.should('have.text', text); //Checks each button to have the correct text
-        });
-        cy.wait(50);
+     genericEC.ListButtonObject(lbo => {
+     lbo.index = i; //Individually iterate over each button
+     lbo.should('have.text', text); //Checks each button to have the correct text
+     });
+     cy.wait(50);
      });
      */
-    set scopedIndex(i) {
+    set scopedIndex(i: number) {
         this._scopedIndex = i;
     }
 
@@ -48,7 +59,7 @@ export default class ElementCollection {
      * @alias this.scopedIndex
      * @param i {number}
      */
-    set index(i) {
+    set index(i: number) {
         this.scopedIndex = i;
     }
 
@@ -80,9 +91,10 @@ export default class ElementCollection {
      *     }
      *     super(containerFn);
      */
-    set updateBaseContainerFunction(newBaseContainerFn) {
+    set updateBaseContainerFunction(newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>) {
         const origBaseContainerFn = this._baseContainerFn;
-        delete this._baseContainerFn();
+        // @ts-ignore
+        delete this._baseContainerFn;
         this._baseContainerFn = () => newBaseContainerFn(origBaseContainerFn);
     }
 
@@ -102,7 +114,7 @@ export default class ElementCollection {
      * If there is more than one instance of the container found, this method will return all located instances
      * @return {*}
      */
-    getAllContainers() {
+    getAllContainers(): Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>> {
         return this._baseContainerFn();
     }
 
@@ -163,14 +175,14 @@ export default class ElementCollection {
      * @return clonedSelf {ElementCollection}
      * @example <summary>Testing two different ElementCollection instances of a Material UI Accordion</summary>
      *      scopedObject.AccordionObject(accordionObj => {
-            const firstAccordion = clone(accordionObj);
-            firstAccordion._scopedIndex = 0;
-            const secondAccordion = clone(accordionObj);
-            secondAccordion._scopedIndex = 1;
-            firstAccordion.click();
-            firstAccordion.container.should('have.class', 'Mui-expanded');
-            secondAccordion.should('have.not.class', 'Mui-expanded');
-        });
+     const firstAccordion = clone(accordionObj);
+     firstAccordion._scopedIndex = 0;
+     const secondAccordion = clone(accordionObj);
+     secondAccordion._scopedIndex = 1;
+     firstAccordion.click();
+     firstAccordion.container.should('have.class', 'Mui-expanded');
+     secondAccordion.should('have.not.class', 'Mui-expanded');
+     });
      * @private
      */
     _clone() {

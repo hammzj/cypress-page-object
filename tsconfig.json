@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "types": [
+      "cypress",
+      "node"
+    ],
+    "sourceMap": false,
+    "allowJs": true,
+    "jsx": "react",
+    "strict": false,
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "outDir": "build/dist",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "build",
+    "acceptance-tests",
+    "cypress.config.js",
+    "cypress",
+    "jest",
+    "node_modules",
+    "scripts",
+    "webpack",
+    "tests/**/*"
+  ],
+  "types": [
+    "typePatches"
+  ]
+}
