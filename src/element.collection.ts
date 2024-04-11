@@ -1,10 +1,9 @@
 import { isNil } from "lodash";
 import { clone } from "./utils";
 
-export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>;
-
+export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector>;
 export type Elements = {
-    [key: string]: (...params: never) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>;
+    [key: string]: (...params: never) => Cypress.Chainable<Cypress.JQueryWithSelector>;
 };
 
 /**
@@ -94,7 +93,7 @@ export default class ElementCollection {
      *     super(containerFn);
      */
     set updateBaseContainerFunction(
-        newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>
+        newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector>
     ) {
         const origBaseContainerFn = this._baseContainerFn;
         // @ts-ignore
@@ -108,7 +107,7 @@ export default class ElementCollection {
      * when expecting multiple elements to be located.
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
-    container(): Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>> {
+    container(): Cypress.Chainable<Cypress.JQueryWithSelector> {
         return !isNil(this._scopedIndex) ?
                 this._baseContainerFn().eq(this._scopedIndex)
             :   this._baseContainerFn().first();
@@ -118,7 +117,7 @@ export default class ElementCollection {
      * If there is more than one instance of the container found, this method will return all located instances
      * @return {*}
      */
-    getAllContainers(): Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>> {
+    getAllContainers(): Cypress.Chainable<Cypress.JQueryWithSelector> {
         return this._baseContainerFn();
     }
 
@@ -155,7 +154,7 @@ export default class ElementCollection {
      *
      * //Select radio with "bar"
      *  radioSelectionFormObject.RadioButtonObject(rbo => {
-     *    rrbo.container().click();
+     *    rbo.container().click();
      *  }, 'bar');
      *
      * @example <summary>Nesting an element without using this function</summary>
