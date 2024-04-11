@@ -81,17 +81,17 @@ export default class PageObject extends ElementCollection {
      * @param pathInputs {...string} optional pathInputs for when the path contains path variables
      * @return pageURL {string}
      */
-    url(...pathInputs: string[]) {
+    url(...pathInputs: string[]): string {
         return (pathInputs) ?
             this.#customPathUrl(...pathInputs) :
             this.#urlObject().toString();
     }
 
-    visit(...pathInputs: string[]) {
+    visit(...pathInputs: string[]): void {
         cy.visit(this.url(...pathInputs));
     }
 
-    verifyIsOnPage(...pathInputs: string[]) {
+    assertIsOnPage(...pathInputs: string[]): void {
         cy.url().should("eq", this.url(...pathInputs));
     }
 }

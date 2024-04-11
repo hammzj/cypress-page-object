@@ -50,20 +50,19 @@
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/consistent-type-definitions": [
-      "error",
-      "interface"
-    ],
+    "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/default-param-last": "error",
     "@typescript-eslint/ban-types": "error",
     "@typescript-eslint/consistent-generic-constructors": [
       "error",
       "type-annotation"
     ],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-implicit-any": "warn",
     "no-console": "off",
     "no-case-declarations": "warn",
     "no-prototype-builtins": "off",
     "no-extra-semi": "off",
-    "prettier/prettier": "error"
+    "prettier/prettier": "warn"
   }
 }

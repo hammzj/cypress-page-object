@@ -29,7 +29,7 @@
   "scripts": {
     "dev:lint": "eslint . --ext .js,.ts",
     "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\"",
-    "dev:install-hooks": "husky install",
+    "postinstall": "husky install",
     "dev:cypress:install": "cypress install",
     "dev:install-example-website": "yarn install --cwd ./tests/example_website",
     "dev:start-example-website": "cd ./tests/example_website && yarn develop",

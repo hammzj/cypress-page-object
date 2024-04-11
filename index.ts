@@ -1,3 +1,3 @@
-import {ElementCollection, PageObject, ComponentObject} from "./src";
+import { ElementCollection, PageObject, ComponentObject } from "./src";
 
-export default {ElementCollection, PageObject, ComponentObject};
+export default { ElementCollection, PageObject, ComponentObject };

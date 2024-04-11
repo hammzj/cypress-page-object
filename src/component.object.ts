@@ -16,11 +16,11 @@ export default class ComponentObject extends ElementCollection {
      * When calling this method, it is best to ensure that the baseContainerFn only uses a single Cypress command;
      * using multiple chained commands may cause this to fail if an earlier selector in the base container function cannot be found.
      */
-    __assertNoneExist() {
+    assertNoneExist(): void {
         this.getAllContainers().should("not.exist");
     }
 
-    __assertExists(expectation = true) {
+    assertExists(expectation: boolean = true): void {
         if (isEqual(expectation, false)) {
             if (gt(this._scopedIndex, 0)) {
                 /*
@@ -32,12 +32,12 @@ export default class ComponentObject extends ElementCollection {
                     "Checking that at least one instance exists, then will check scoped index at " + this._scopedIndex
                 );
                 this._baseContainerFn().should("exist"); //At least one instance exists
-                this.container.should("not.exist"); //The specified instance does not exist
+                this.container().should("not.exist"); //The specified instance does not exist
             } else {
                 this._baseContainerFn().should("not.exist");
             }
         } else {
-            this.container.should("exist");
+            this.container().should("exist");
         }
     }
 }

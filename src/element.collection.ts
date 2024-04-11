@@ -13,7 +13,9 @@ export type Elements = {
 export default class ElementCollection {
     protected _baseContainerFn: BaseContainerFunction;
     protected _scopedIndex?: number;
-    public elements: Elements = {};
+    public elements: Elements = {
+        container: () => this.container(),
+    };
     public components: Elements = {};
 
     /**
@@ -91,7 +93,9 @@ export default class ElementCollection {
      *     }
      *     super(containerFn);
      */
-    set updateBaseContainerFunction(newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>) {
+    set updateBaseContainerFunction(
+        newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>>,
+    ) {
         const origBaseContainerFn = this._baseContainerFn;
         // @ts-ignore
         delete this._baseContainerFn;
@@ -104,7 +108,7 @@ export default class ElementCollection {
      * when expecting multiple elements to be located.
      * @return baseContainerElement {Chainable<JQuery<E>>}
      */
-    get container(): Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>> {
+    container(): Cypress.Chainable<Cypress.JQueryWithSelector<HTMLElement>> {
         return !isNil(this._scopedIndex)
             ? this._baseContainerFn().eq(this._scopedIndex)
             : this._baseContainerFn().first();
