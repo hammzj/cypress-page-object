@@ -8,13 +8,13 @@ However, components may exist in multiple places on a page at once, and therefor
 Cypress incorrectly selecting the wrong instance. Therefore, nested components _need_ to be also be chained from an
 element selector existing inside of the parent object. Luckily, that's able to happen in an `ElementCollection`.
 
-## Nesting component objects with the `_nestedObject` utility function
+## Nesting component objects with the `_nestedComponent` utility function
 
-A utility function exists in any `ElementCollection` instance named `_nestedObject`. This allows you to add a nested
+A utility function exists in any `ElementCollection` instance named `_nestedComponent`. This allows you to add a nested
 component object/element collection to exist inside of your parent component/page object. Nested Objects should always
 be written in **SentenceCase**.
 
-`this._nestedObject(baseElement, nestedObject, fn)`
+`this._nestedComponent(baseElement, nestedComponent, fn)`
 
 It accepts the following parameters:
 
@@ -22,22 +22,22 @@ It accepts the following parameters:
     -   Examples:
         -   `this.container`
         -   any static element selector
--   `nestedObject`: a new instance of the nested object class, containing any needed parameters in the constructor
+-   `nestedComponent`: a new instance of the nested object class, containing any needed parameters in the constructor
     -   Examples:
         -   a new instance of an `ElementCollection` or `ComponentObject`
         -   `new AccountFormObject()`
         -   `new AlertDialogObject('An error occurred')`: parameterized object
--   fn: this function must take the nestedObject as its parameter, and then it can perform Cypress commands
+-   fn: this function must take the nestedComponent as its parameter, and then it can perform Cypress commands
     -   Examples:
 
 ```js
-function fn(nestedObject) {
-    //Add cypress commands using the nestedObject here
+function fn(nestedComponent) {
+    //Add cypress commands using the nestedComponent here
 }
 
 //or
-(nestedObject) => {
-    //Add cypress commands using the nestedObject here
+(nestedComponent) => {
+    //Add cypress commands using the nestedComponent here
 };
 ```
 
@@ -53,7 +53,7 @@ class CreateAccountPage extends PageObject {
     }
 
     AccountFormObject(fn) {
-        this._nestedObject(this.container, new AccountFormObject(), fn);
+        this._nestedComponent(this.container, new AccountFormObject(), fn);
     }
 }
 ```
@@ -100,7 +100,7 @@ class SettingsObject extends ComponentObject {
     }
 
     ToggleButton(fn, buttonText) {
-        this._nestedObject(this.displaySettingsForm, new ToggleButton(buttonText), fn);
+        this._nestedComponent(this.displaySettingsForm, new ToggleButton(buttonText), fn);
     }
 }
 ```
@@ -134,7 +134,7 @@ into its own `ComponentObject`, and nest the nested object inside of it.
 
 ## Nesting component objects using `cy.within()`
 
-The `_nestedObject` utility function does not need to be used to nest components. Instead, using Cypress' `within()` on
+The `_nestedComponent` utility function does not need to be used to nest components. Instead, using Cypress' `within()` on
 the base element command will work just the same!
 
 ```js

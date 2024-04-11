@@ -2,9 +2,17 @@ import { isNil } from "lodash";
 import { clone } from "./utils";
 
 export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector>;
+export type ComponentObjectFunction = (instance: ElementCollection) => void;
 export type Elements = {
-    [key: string]: (...params: never) => Cypress.Chainable<Cypress.JQueryWithSelector>;
+    [key: string]: (...params: any) => Cypress.Chainable<Cypress.JQueryWithSelector>;
 };
+export type NestedComponents = {
+    [key: string]: (fn: ComponentObjectFunction, ...params: any) => void;
+};
+
+export interface IMetadata {
+    [key: string]: any;
+}
 
 /**
  * Base class for describing page objects and components, which have a collection of element selectors
@@ -12,10 +20,11 @@ export type Elements = {
 export default class ElementCollection {
     protected _baseContainerFn: BaseContainerFunction;
     protected _scopedIndex?: number;
+    protected metadata: Partial<IMetadata>;
     public elements: Elements = {
         container: () => this.container(),
     };
-    public components: Elements = {};
+    public components?: NestedComponents = {};
 
     /**
      * @param baseContainerFn {function} The base container function returns the container of the element.
@@ -25,6 +34,7 @@ export default class ElementCollection {
      */
     constructor(baseContainerFn: BaseContainerFunction = () => cy.root()) {
         this._baseContainerFn = baseContainerFn;
+        this.metadata = {};
     }
 
     /**
@@ -105,12 +115,11 @@ export default class ElementCollection {
      * Returns the first base container of the component/element.
      * When `_scopedIndex` is set, then it will only return the "i"-indexed container,
      * when expecting multiple elements to be located.
-     * @return baseContainerElement {Chainable<JQuery<E>>}
      */
     container(): Cypress.Chainable<Cypress.JQueryWithSelector> {
         return !isNil(this._scopedIndex) ?
-                this._baseContainerFn().eq(this._scopedIndex)
-            :   this._baseContainerFn().first();
+                this.getAllContainers().eq(this._scopedIndex)
+            :   this.getAllContainers().first();
     }
 
     /**
@@ -122,11 +131,11 @@ export default class ElementCollection {
     }
 
     /**
-     * A nested object is one that exists within the container of the parent/base object.
-     * A nestedObject can also contain its own nestedObjects.
+     * A nested component object is one that exists within the container of its parent/base object. It cannot be found outside of its parent's container.
+     * A nestedComponent can also contain its own nestedComponents.
      * @param baseElement {any} an element selector existing on `this`
-     * @param nestedObject {ElementCollection|ComponentObject} a `new` instance of the nested object, containing any parameters necessary
-     * @param fn {function} this function must take the nestedObject as its parameter, and then it can perform Cypress commands
+     * @param nestedComponent {ElementCollection|ComponentObject} a `new` instance of the nested object, containing any parameters necessary
+     * @param fn {function} this function must take the nestedComponent as its parameter, and then it can perform Cypress commands
      * @returns {void}
      * on that nested object.
      *
@@ -140,7 +149,7 @@ export default class ElementCollection {
      * @example <summary>Selecting a parameterized ComponentObject that exists as a radio button with text </summary>
      * //RadioSelectionFormObject
      * RadioButtonObject(fn, buttonText) {
-     *     this._nestedObject(this.elements.form(), new RadioButtonObject(buttonText), fn);
+     *     this._nestedComponent(this.elements.form(), new RadioButtonObject(buttonText), fn);
      * }
      *
      * //...
@@ -163,13 +172,13 @@ export default class ElementCollection {
      *   this.elements.form().within(() => fn(new RadioButtonObject(buttonText)));
      * }
      */
-    _nestedObject(baseElement, nestedObject, fn) {
+    _nestedComponent(baseElement, nestedComponent, fn) {
         //TODO: test this warning
-        //if(PageObject.prototype.isPrototypeOf(nestedObject)){
+        //if(PageObject.prototype.isPrototypeOf(nestedComponent)){
         //    throw Error('Cannot nest a PageObject inside of another base ElementCollection instance')
         //}
 
-        baseElement.within(() => fn(nestedObject));
+        baseElement.within(() => fn(nestedComponent));
     }
 
     /**

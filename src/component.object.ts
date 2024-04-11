@@ -7,7 +7,7 @@ import ElementCollection, { BaseContainerFunction } from "./element.collection";
  * other nested component objects themselves.
  */
 export default class ComponentObject extends ElementCollection {
-    constructor(baseContainerFn: BaseContainerFunction) {
+    constructor(baseContainerFn?: BaseContainerFunction) {
         super(baseContainerFn);
     }
 

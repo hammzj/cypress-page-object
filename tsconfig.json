@@ -26,7 +26,7 @@
   "exclude": [
     "build",
     "acceptance-tests",
-    "cypress.config.js",
+    "cypress.config",
     "cypress",
     "jest",
     "node_modules",
