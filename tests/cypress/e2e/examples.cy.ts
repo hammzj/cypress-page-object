@@ -96,47 +96,44 @@ describe("Element collections", function () {
     });
 
     describe("Component objects", function () {
+        specify("component objects are located using a base container function", function () {
+            class ProPricingCardObject extends ComponentObject {
+                constructor() {
+                    super(() => cy.contains(".MuiCard-root", "Pro"));
+                }
+            }
+
+            const proPricingCardObject = new ProPricingCardObject();
+
+            cy.log(
+                `Component objects use a base container function from which any other element selectors can be chained`
+            );
+            proPricingCardObject.elements.container().should("exist"); //Container is re-aliased inside of `this.elements`
+            proPricingCardObject.container().should("exist");
+            proPricingCardObject.container().should("have.lengthOf", 1);
+        });
+
+        specify("component objects can have their own element selectors", function () {
+            class ProPricingCardObject extends ComponentObject {
+                constructor() {
+                    super(() => cy.contains(".MuiCard-root", "Pro"));
+                }
+
+                elements = {
+                    header: () => this.container().find(".MuiCardHeader-root"),
+                    starIcon: () => this.elements.header().find('svg[data-testid="StarBorderIcon"]'),
+                };
+            }
+
+            const proPricingCardObject = new ProPricingCardObject();
+
+            cy.log(`Component objects can contain element selectors`);
+            proPricingCardObject.container().should("exist");
+            proPricingCardObject.elements.header().should("contain.text", "Pro").and("contain.text", "Most popular");
+            proPricingCardObject.elements.starIcon().should("exist");
+        });
+
         context("Nested component objects", function () {
-            specify("component objects are located using a base container function", function () {
-                class ProPricingCardObject extends ComponentObject {
-                    constructor() {
-                        super(() => cy.contains(".MuiCard-root", "Pro"));
-                    }
-                }
-
-                const proPricingCardObject = new ProPricingCardObject();
-
-                cy.log(
-                    `Component objects use a base container function from which any other element selectors can be chained`
-                );
-                proPricingCardObject.elements.container().should("exist"); //Container is re-aliased inside of `this.elements`
-                proPricingCardObject.container().should("exist");
-                proPricingCardObject.container().should("have.lengthOf", 1);
-            });
-
-            specify("component objects can have their own element selectors", function () {
-                class ProPricingCardObject extends ComponentObject {
-                    constructor() {
-                        super(() => cy.contains(".MuiCard-root", "Pro"));
-                    }
-
-                    elements = {
-                        header: () => this.container().find(".MuiCardHeader-root"),
-                        starIcon: () => this.elements.header().find('svg[data-testid="StarBorderIcon"]'),
-                    };
-                }
-
-                const proPricingCardObject = new ProPricingCardObject();
-
-                cy.log(`Component objects can contain element selectors`);
-                proPricingCardObject.container().should("exist");
-                proPricingCardObject.elements
-                    .header()
-                    .should("contain.text", "Pro")
-                    .and("contain.text", "Most popular");
-                proPricingCardObject.elements.starIcon().should("exist");
-            });
-
             specify("nested component object base container functions can be parameterized", function () {
                 class PricingCardObject extends ComponentObject {
                     constructor(title) {
@@ -193,7 +190,7 @@ describe("Element collections", function () {
                 proPricingCardObject.elements.starIcon().should("exist");
             });
 
-            specify("component objects can nested other component objects using _nestedComponent", function () {
+            specify("component objects can nested other component objects using performWithin", function () {
                 class PricingHeaderObject extends ComponentObject {
                     constructor() {
                         super(() => cy.get(".MuiCardHeader-root"));
@@ -223,7 +220,7 @@ describe("Element collections", function () {
                     };
                     components = {
                         PricingHeaderObject: (fn) =>
-                            this._nestedComponent(this.container(), new PricingHeaderObject(), fn),
+                            this.performWithin(this.container(), new PricingHeaderObject(), fn),
                     };
                 }
 
@@ -283,7 +280,7 @@ describe("Element collections", function () {
                     const proPricingCardObject = new PricingCardObject("Pro");
 
                     cy.log(
-                        `The function above for PricingHeaderObject is functionally equivalent to using "this._nestedComponent"`
+                        `The function above for PricingHeaderObject is functionally equivalent to using "this.performWithin"`
                     );
                     proPricingCardObject.components.PricingHeaderObject((pricingHeaderObject: PricingHeaderObject) => {
                         pricingHeaderObject.elements.title().should("have.text", "Pro");
@@ -302,6 +299,7 @@ describe("Element collections", function () {
                     }
 
                     elements = {
+                        ...this.elements,
                         link: (label: string) => this.container().contains("a", label, { matchCase: true }),
                     };
                 }
@@ -312,12 +310,13 @@ describe("Element collections", function () {
                     }
 
                     elements = {
+                        ...this.elements,
                         gridLayout: () => this.container().find(`.MuiGrid-container`),
                         copyright: () => this.container().find(`p.MuiTypography-root`),
                     };
                     components = {
                         LinkListObject: (title, fn) => {
-                            this._nestedComponent(this.elements.gridLayout(), new LinkListObject(title), fn);
+                            this.performWithin(this.elements.gridLayout(), new LinkListObject(title), fn);
                         },
                     };
                 }
@@ -349,6 +348,7 @@ describe("Element collections", function () {
                     }
 
                     elements = {
+                        ...this.elements,
                         link: () => this.container().find("ul > li"),
                     };
 
@@ -368,12 +368,13 @@ describe("Element collections", function () {
                     }
 
                     elements = {
+                        ...this.elements,
                         gridLayout: () => this.container().find(`.MuiGrid-container`),
                         copyright: () => this.container().find(`p.MuiTypography-root`),
                     };
                     components = {
                         LinkListObject: (title, fn) => {
-                            this._nestedComponent(this.elements.gridLayout(), new LinkListObject(title), fn);
+                            this.performWithin(this.elements.gridLayout(), new LinkListObject(title), fn);
                         },
                     };
 
@@ -429,12 +430,13 @@ describe("Element collections", function () {
                         }
 
                         elements = {
+                            ...this.elements,
                             gridLayout: () => this.container().find(`.MuiGrid-container`),
                         };
 
                         components = {
                             LinkListObject: (fn) =>
-                                this._nestedComponent(this.elements.gridLayout(), new LinkListObject(), fn),
+                                this.performWithin(this.elements.gridLayout(), new LinkListObject(), fn),
                         };
                     }
 
@@ -452,302 +454,274 @@ describe("Element collections", function () {
                         `By setting the scoped index of the nested component object, actions can be performed successfully on distinct components`
                     );
                     footerObject.components.LinkListObject((listLinkObject) => {
-                        listLinkObject.scopedIndex = 0;
+                        listLinkObject.index = 0;
                         listLinkObject.elements.title().should("have.text", "Company");
                     });
                     footerObject.components.LinkListObject((listLinkObject) => {
-                        listLinkObject.scopedIndex = 1;
+                        listLinkObject.index = 1;
+                        listLinkObject.elements.title().should("have.text", "Features");
+                        listLinkObject.scopedIndex = 1; //Alternate way to set an index
                         listLinkObject.elements.title().should("have.text", "Features");
                     });
                     footerObject.components.LinkListObject((listLinkObject) => {
-                        listLinkObject.scopedIndex = 2;
+                        listLinkObject.index = 2;
                         listLinkObject.elements.title().should("have.text", "Resources");
                     });
                     footerObject.components.LinkListObject((listLinkObject) => {
-                        listLinkObject.scopedIndex = 3;
+                        listLinkObject.index = 3;
                         listLinkObject.elements.title().should("have.text", "Legal");
                     });
                 }
             );
 
-            specify.only("component objects can be cloned", function () {
-                class LinkListObject extends ComponentObject {
-                    //This time, the base container is going to be generically located
-                    //So there is a chance for it to find more than one instance.
-                    //Thus, setting the index is important
-                    constructor() {
-                        super(() => {
-                            return cy.get(".MuiTypography-h6").parent(".MuiGrid-item");
-                        });
-                    }
-
-                    elements = {
-                        title: () => this.container().find(".MuiTypography-h6"),
-                        link: () => this.container().find("ul > li"),
-                    };
-
-                    //app action to perform an assertion
-                    assertLinksInOrder(...labels: string[]) {
-                        cy.log("labels", labels);
-                        console.log("labels", labels);
-                        this.elements.link().each(($link) => {
-                            cy.wrap($link).should("have.text", labels.shift());
-                        });
-                    }
-                }
-
-                const linkListObject = new LinkListObject();
-
-                cy.log(
-                    `To select iterative components from a generic base container function, cloning the base instance and changing properties afterwards is also possible`
-                );
-                cy.log(`This is the first distinct component object created from the generic "linkListObject"`);
-                const firstLinkListObject = linkListObject._clone();
-                firstLinkListObject.scopedIndex = 0;
-                firstLinkListObject.elements.title().should("have.text", "Company");
-
-                cy.log(`This is the second distinct component object created from the generic "linkListObject"`);
-                const secondLinkListObject = linkListObject._clone();
-                secondLinkListObject.scopedIndex = 1;
-                secondLinkListObject.elements.title().should("have.text", "Features");
-            });
-        });
-
-        context("class app actions", function () {
-            specify("assertNoneExist", function () {
-                class AlertObject extends ComponentObject {
-                    constructor() {
-                        super(() => {
-                            //This does not exist
-                            return cy.get("div.alert");
-                        });
-                    }
-                }
-
-                const alertObject = new AlertObject();
-
-                alertObject.getAllContainers().should("have.lengthOf", 0); //Ensuring no elements exist
-                alertObject.assertNoneExist(); //Should succeed
-            });
-
-            context("assertExists", function () {
-                it("succeeds when the component container exists", function () {
-                    class PricingCardObject extends ComponentObject {
-                        constructor(title) {
+            context("class app actions", function () {
+                specify("assertNoneExist", function () {
+                    class AlertObject extends ComponentObject {
+                        constructor() {
                             super(() => {
-                                return cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root");
+                                //This does not exist
+                                return cy.get("div.alert");
                             });
                         }
                     }
 
-                    const pricingCardObject = new PricingCardObject("Free");
-                    pricingCardObject.assertExists(true);
+                    const alertObject = new AlertObject();
+
+                    alertObject.getAllContainers().should("have.lengthOf", 0); //Ensuring no elements exist
+                    alertObject.assertNoneExist(); //Should succeed
                 });
 
-                it("succeeds when the component container does not exist", function () {
-                    class PricingCardObject extends ComponentObject {
-                        constructor(title) {
-                            super(() => {
-                                return cy.contains(".MuiCard-root", title);
-                            });
+                context("assertExists", function () {
+                    it("succeeds when the component container exists", function () {
+                        class PricingCardObject extends ComponentObject {
+                            constructor(title) {
+                                super(() => {
+                                    return cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root");
+                                });
+                            }
                         }
-                    }
 
-                    const pricingCardObject = new PricingCardObject("NOT FREE");
-                    pricingCardObject.assertExists(false);
-                });
+                        const pricingCardObject = new PricingCardObject("Free");
+                        pricingCardObject.assertExists(true);
+                    });
 
-                it("succeeds when the component container does not exist and the scoped index is above 0", function () {
-                    class PricingCardObject extends ComponentObject {
-                        constructor(title) {
-                            super(() => {
-                                return cy.contains(".MuiCard-root", title);
-                            });
+                    it("succeeds when the component container does not exist", function () {
+                        class PricingCardObject extends ComponentObject {
+                            constructor(title: string) {
+                                super(() => {
+                                    return cy.contains(".MuiCard-root", title);
+                                });
+                            }
                         }
-                    }
 
-                    const pricingCardObject = new PricingCardObject("Free");
-                    pricingCardObject.assertExists(true);
+                        const pricingCardObject = new PricingCardObject("NOT FREE");
+                        pricingCardObject.assertExists(false);
+                    });
 
-                    pricingCardObject.scopedIndex = 1;
-                    pricingCardObject.assertExists(false);
+                    it("succeeds when the component container does not exist and the scoped index is above 0", function () {
+                        class PricingCardObject extends ComponentObject {
+                            constructor(title: string) {
+                                super(() => cy.contains(".MuiCard-root", title));
+                            }
+                        }
+
+                        const pricingCardObject = new PricingCardObject("Free");
+                        pricingCardObject.assertExists(true);
+
+                        pricingCardObject.scopedIndex = 1;
+                        pricingCardObject.assertExists(false);
+                    });
                 });
             });
         });
     });
 
-    context("Page objects", function () {
+    describe("Page objects", function () {
+        class AppBar extends ComponentObject {
+            constructor() {
+                super(() => cy.get(".MuiAppBar-root"));
+            }
+
+            elements = {
+                ...this.elements,
+                link: (label: string) => this.container().contains("a.MuiLink-root", label, { matchCase: true }),
+                loginButton: () => this.container().find(".MuiButtonBase-root"),
+            };
+        }
+
+        class PricingHeaderObject extends ComponentObject {
+            constructor() {
+                super(() => cy.get(".MuiCardHeader-root"));
+            }
+
+            elements = {
+                ...this.elements,
+                title: () => this.container().find(".MuiCardHeader-title"),
+                subtitle: () => this.container().find(".MuiCardHeader-subheader"),
+                starIcon: () => this.container().find('svg[data-testid="StarBorderIcon"]'),
+            };
+        }
+
+        class PricingCardObject extends ComponentObject {
+            constructor(title) {
+                super(() => {
+                    return cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root");
+                });
+            }
+
+            elements = {
+                ...this.elements,
+                contentContainer: () => this.container().find(".MuiCardContent-root"),
+                pricing: () => this.container().find("button"),
+                submitButton: () => this.elements.contentContainer().find(".MuiBox-root"),
+                listItem: (label: string) => this.elements.contentContainer().contains("ul > li", label),
+            };
+
+            components = {
+                PricingHeaderObject: (fn) => this.performWithin(this.container(), new PricingHeaderObject(), fn),
+            };
+        }
+
+        class LinkListObject extends ComponentObject {
+            constructor(title) {
+                super(() => {
+                    return cy.contains(".MuiTypography-h6", title).parent(".MuiGrid-item");
+                });
+            }
+
+            elements = {
+                ...this.elements,
+                link: () => this.container().find("ul > li"),
+            };
+
+            //app action to perform an assertion
+            assertLinksInOrder(...labels) {
+                cy.log("labels", labels);
+                console.log("labels", labels);
+                this.elements.link().each(($link) => {
+                    cy.wrap($link).should("have.text", labels.shift());
+                });
+            }
+        }
+
+        class FooterObject extends ComponentObject {
+            constructor() {
+                super(() => cy.get(`footer`));
+            }
+
+            elements = {
+                ...this.elements,
+                gridLayout: () => this.container().find(`.MuiGrid-container`),
+                copyright: () => this.container().find(`p.MuiTypography-root`),
+            };
+            components = {
+                LinkListObject: (title, fn) =>
+                    this.performWithin(this.elements.gridLayout(), new LinkListObject(title), fn),
+            };
+
+            //app action to perform a page action
+            visitCopyrightLink() {
+                this.elements.copyright.find("a").click();
+            }
+        }
+
+        class ExamplePageObject extends PageObject {
+            constructor() {
+                super();
+            }
+
+            elements = {
+                ...this.elements,
+                main: () => this.container().find("main").first(),
+                contentTitle: () => this.elements.main().find("h1").first(),
+                contentDescription: () => this.elements.contentTitle().next(),
+            };
+
+            components = {
+                AppBar: (fn) => {
+                    this.performWithin(this.container(), new AppBar(), fn);
+                },
+                PricingCardObject: (title, fn) => {
+                    this.performWithin(this.container(), new PricingCardObject(title), fn);
+                },
+                FooterObject: (fn) => {
+                    this.performWithin(this.container(), new FooterObject(), fn);
+                },
+            };
+        }
+
+        const examplePageObject = new ExamplePageObject();
+
+        specify("Page objects can have elements", function () {
+            examplePageObject.elements.contentTitle().should("have.text", "Pricing");
+            examplePageObject.elements
+                .contentDescription()
+                .should(
+                    "have.text",
+                    `Quickly build an effective pricing table for your potential customers with this layout. It's built with default MUI components with little customization.`
+                );
+        });
+
         specify("Page objects can have nested component objects", function () {
-            class AppBar extends ComponentObject {
+            cy.log("This is a full example of putting it all together");
+            examplePageObject.components.AppBar((appBar) => {
+                appBar.elements.loginButton().should("exist");
+                appBar.elements.link("Features").should("exist");
+                appBar.elements.link("Enterprise").should("exist");
+                appBar.elements.link("Support").should("exist");
+            });
+            examplePageObject.components.PricingCardObject("Free", (pricingCardObject) => {
+                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject) => {
+                    pricingHeaderObject.elements.starIcon().should("not.exist");
+                    pricingCardObject.elements.pricing().should("have.text", "Sign up for free");
+                });
+            });
+            examplePageObject.components.PricingCardObject("Pro", (pricingCardObject) => {
+                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject) => {
+                    pricingHeaderObject.elements.starIcon().should("exist");
+                    pricingCardObject.elements.pricing().should("have.text", "Get started");
+                });
+            });
+            examplePageObject.components.PricingCardObject("Enterprise", (pricingCardObject) => {
+                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject) => {
+                    pricingHeaderObject.elements.starIcon().should("not.exist");
+                    pricingCardObject.elements.pricing().should("have.text", "Contact us");
+                });
+            });
+            examplePageObject.components.FooterObject((footerObject) => {
+                footerObject.components.LinkListObject("Company", (linkListObject) => {
+                    linkListObject.assertLinksInOrder("Team", "History", "Contact us", "Locations");
+                });
+            });
+        });
+
+        specify("Page objects cannot have other nested page objects", function () {
+            class AnotherPageObjectBaseClass extends PageObject {
                 constructor() {
-                    super(() => cy.get(".MuiAppBar-root"));
-                }
-
-                link(label) {
-                    return this.container.contains("a.MuiLink-root", label, { matchCase: true });
-                }
-
-                get loginButton() {
-                    return this.container.find(".MuiButtonBase-root");
+                    super();
                 }
             }
 
-            class PricingHeaderObject extends ComponentObject {
+            class AnotherPageObject extends AnotherPageObjectBaseClass {
                 constructor() {
-                    super(() => cy.get(".MuiCardHeader-root"));
-                }
-
-                get title() {
-                    return this.container.find(".MuiCardHeader-title");
-                }
-
-                get subtitle() {
-                    return this.container.find(".MuiCardHeader-subheader");
-                }
-
-                get starIcon() {
-                    return this.container.find('svg[data-testid="StarBorderIcon"]');
+                    super();
                 }
             }
 
-            class PricingCardObject extends ComponentObject {
-                constructor(title) {
-                    super(() => {
-                        return cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root");
-                    });
-                }
-
-                PricingHeaderObject(fn) {
-                    this._nestedComponent(this.container, new PricingHeaderObject(), fn);
-                }
-
-                get contentContainer() {
-                    return this.container.find(".MuiCardContent-root");
-                }
-
-                get pricing() {
-                    return this.contentContainer.find(".MuiBox-root");
-                }
-
-                listItem(label) {
-                    return this.contentContainer.contains("ul > li", label);
-                }
-
-                get submitButton() {
-                    return this.container.find("button");
-                }
-            }
-
-            class LinkListObject extends ComponentObject {
-                constructor(title) {
-                    super(() => {
-                        return cy.contains(".MuiTypography-h6", title).parent(".MuiGrid-item");
-                    });
-                }
-
-                get link() {
-                    return this.container.find("ul > li");
-                }
-
-                //app action to perform an assertion
-                __assertLinksInOrder(...labels) {
-                    cy.log("labels", labels);
-                    console.log("labels", labels);
-                    this.link.each(($link) => {
-                        cy.wrap($link).should("have.text", labels.shift());
-                    });
-                }
-            }
-
-            class FooterObject extends ComponentObject {
-                constructor() {
-                    super(() => cy.get(`footer`));
-                }
-
-                get gridLayout() {
-                    return this.container.find(`.MuiGrid-container`);
-                }
-
-                get copyright() {
-                    return this.container.find(`p.MuiTypography-root`);
-                }
-
-                LinkListObject(title, fn) {
-                    this._nestedComponent(this.gridLayout, new LinkListObject(title), fn);
-                }
-
-                //app action to perform a page action
-                __visitCopyrightLink() {
-                    this.copyright.find("a").click();
-                }
-            }
-
-            class ExamplePageObject extends PageObject {
+            class ParentPageObject extends PageObject {
                 constructor() {
                     super();
                 }
 
-                AppBar(fn) {
-                    this._nestedComponent(this.container, new AppBar(), fn);
-                }
-
-                get main() {
-                    return this.container.find("main").first();
-                }
-
-                get contentTitle() {
-                    return this.main.find("h1");
-                }
-
-                get contentDescription() {
-                    return this.contentTitle.next();
-                }
-
-                PricingCardObject(title, fn) {
-                    this._nestedComponent(this.container, new PricingCardObject(title), fn);
-                }
-
-                FooterObject(fn) {
-                    this._nestedComponent(this.container, new FooterObject(), fn);
-                }
+                components = {
+                    AnotherPageObject: (fn) => this.performWithin(this.container(), new AnotherPageObject(), fn),
+                };
             }
 
-            cy.log("This is a full example of putting it all together");
-            const examplePageObject = new ExamplePageObject();
-            examplePageObject.components.AppBar((appBar) => {
-                appBar.loginButton.should("exist");
-                appBar.link("Features").should("exist");
-                appBar.link("Enterprise").should("exist");
-                appBar.link("Support").should("exist");
-            });
-            examplePageObject.components.contentTitle.should("have.text", "Pricing");
-            examplePageObject.components.contentDescription.should(
-                "have.text",
-                `Quickly build an effective pricing table for your potential customers with this layout. It's built with default MUI components with little customization.`
-            );
-            examplePageObject.components.PricingCardObject("Free", (pricingCardObject) => {
-                pricingCardObject.PricingHeaderObject((pricingHeaderObject) => {
-                    pricingHeaderObject.starIcon.should("not.exist");
-                    pricingCardObject.pricing.should("have.text", "$0/mo");
-                });
-            });
-            examplePageObject.components.PricingCardObject("Pro", (pricingCardObject) => {
-                pricingCardObject.PricingHeaderObject((pricingHeaderObject) => {
-                    pricingHeaderObject.starIcon.should("exist");
-                    pricingCardObject.pricing.should("have.text", "$15/mo");
-                });
-            });
-            examplePageObject.components.PricingCardObject("Enterprise", (pricingCardObject) => {
-                pricingCardObject.PricingHeaderObject((pricingHeaderObject) => {
-                    pricingHeaderObject.starIcon.should("not.exist");
-                    pricingCardObject.pricing.should("have.text", "$30/mo");
-                });
-            });
-            examplePageObject.components.FooterObject((footerObject) => {
-                footerObject.LinkListObject("Company", (linkListObject) => {
-                    linkListObject.__assertLinksInOrder("Team", "History", "Contact us", "Locations");
-                });
-            });
+            const parentPageObject = new ParentPageObject();
+            expect(() =>
+                parentPageObject.components.AnotherPageObject((anotherPageObject) => cy.log(anotherPageObject))
+            ).to.throw("Page objects cannot be nested in other page objects");
         });
 
         context("class app actions", function () {
@@ -767,15 +741,15 @@ describe("Element collections", function () {
 
             specify(`"url" returns the url specified for the page object`, function () {
                 class ExamplePageObject extends PageObject {
-                    constructor(path) {
-                        super({ path });
+                    constructor(metadata = {}) {
+                        super(metadata);
                     }
                 }
 
                 const examplePageObject = new ExamplePageObject();
                 expect(examplePageObject.url()).to.eq(Cypress.config().baseUrl);
 
-                const examplePageObjectWithPath = new ExamplePageObject("/about");
+                const examplePageObjectWithPath = new ExamplePageObject({ path: "/about" });
                 expect(examplePageObjectWithPath.url()).to.eq(new URL("/about", Cypress.config().baseUrl).toString());
             });
 

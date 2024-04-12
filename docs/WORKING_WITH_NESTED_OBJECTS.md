@@ -8,13 +8,13 @@ However, components may exist in multiple places on a page at once, and therefor
 Cypress incorrectly selecting the wrong instance. Therefore, nested components _need_ to be also be chained from an
 element selector existing inside of the parent object. Luckily, that's able to happen in an `ElementCollection`.
 
-## Nesting component objects with the `_nestedComponent` utility function
+## Nesting component objects with the `performWithin` utility function
 
-A utility function exists in any `ElementCollection` instance named `_nestedComponent`. This allows you to add a nested
+A utility function exists in any `ElementCollection` instance named `performWithin`. This allows you to add a nested
 component object/element collection to exist inside of your parent component/page object. Nested Objects should always
 be written in **SentenceCase**.
 
-`this._nestedComponent(baseElement, nestedComponent, fn)`
+`this.performWithin(baseElement, nestedComponent, fn)`
 
 It accepts the following parameters:
 
@@ -53,7 +53,7 @@ class CreateAccountPage extends PageObject {
     }
 
     AccountFormObject(fn) {
-        this._nestedComponent(this.container, new AccountFormObject(), fn);
+        this.performWithin(this.container, new AccountFormObject(), fn);
     }
 }
 ```
@@ -100,7 +100,7 @@ class SettingsObject extends ComponentObject {
     }
 
     ToggleButton(fn, buttonText) {
-        this._nestedComponent(this.displaySettingsForm, new ToggleButton(buttonText), fn);
+        this.performWithin(this.displaySettingsForm, new ToggleButton(buttonText), fn);
     }
 }
 ```
@@ -134,7 +134,7 @@ into its own `ComponentObject`, and nest the nested object inside of it.
 
 ## Nesting component objects using `cy.within()`
 
-The `_nestedComponent` utility function does not need to be used to nest components. Instead, using Cypress' `within()` on
+The `performWithin` utility function does not need to be used to nest components. Instead, using Cypress' `within()` on
 the base element command will work just the same!
 
 ```js

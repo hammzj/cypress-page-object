@@ -5,13 +5,21 @@ export interface IPageMetadata {
     baseUrl: string;
     path: string | "";
     title?: string;
+
     [key: string]: any;
+}
+
+class UnexpectedNestedPageObjectError extends Error {
+    constructor() {
+        super("Page objects cannot be nested in other page objects");
+        this.name = "UnexpectedNestedPageObjectError";
+    }
 }
 
 class InsufficientPathVariablesError extends Error {
     constructor() {
-        super("Not enough path variables were supplied, so path cannot be substituted"); // (1)
-        this.name = "InsufficientPathVariablesError"; // (2)
+        super("Not enough path variables were supplied, so path cannot be substituted");
+        this.name = "InsufficientPathVariablesError";
     }
 }
 
@@ -91,5 +99,12 @@ export default class PageObject extends ElementCollection {
 
     assertIsOnPage(...pathInputs: string[]): void {
         cy.url().should("eq", this.url(...pathInputs));
+    }
+
+    performWithin(baseElement, nestedComponent, fn) {
+        if (PageObject.prototype.isPrototypeOf(nestedComponent)) {
+            throw new UnexpectedNestedPageObjectError();
+        }
+        super.performWithin(baseElement, nestedComponent, fn);
     }
 }

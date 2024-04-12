@@ -1,5 +1,4 @@
 import { isNil } from "lodash";
-import { clone } from "./utils";
 
 export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector>;
 export type ComponentObjectFunction = (instance: ElementCollection) => void;
@@ -9,7 +8,6 @@ export type Elements = {
 export type NestedComponents = {
     [key: string]: (fn: ComponentObjectFunction, ...params: any) => void;
 };
-
 export interface IMetadata {
     [key: string]: any;
 }
@@ -102,7 +100,7 @@ export default class ElementCollection {
      *     }
      *     super(containerFn);
      */
-    set updateBaseContainerFunction(
+    protected set updateBaseContainerFunction(
         newBaseContainerFn: (b: BaseContainerFunction) => Cypress.Chainable<Cypress.JQueryWithSelector>
     ) {
         const origBaseContainerFn = this._baseContainerFn;
@@ -124,7 +122,6 @@ export default class ElementCollection {
 
     /**
      * If there is more than one instance of the container found, this method will return all located instances
-     * @return {*}
      */
     getAllContainers(): Cypress.Chainable<Cypress.JQueryWithSelector> {
         return this._baseContainerFn();
@@ -149,7 +146,7 @@ export default class ElementCollection {
      * @example <summary>Selecting a parameterized ComponentObject that exists as a radio button with text </summary>
      * //RadioSelectionFormObject
      * RadioButtonObject(fn, buttonText) {
-     *     this._nestedComponent(this.elements.form(), new RadioButtonObject(buttonText), fn);
+     *     this.performWithin(this.elements.form(), new RadioButtonObject(buttonText), fn);
      * }
      *
      * //...
@@ -172,32 +169,7 @@ export default class ElementCollection {
      *   this.elements.form().within(() => fn(new RadioButtonObject(buttonText)));
      * }
      */
-    _nestedComponent(baseElement, nestedComponent, fn) {
-        //TODO: test this warning
-        //if(PageObject.prototype.isPrototypeOf(nestedComponent)){
-        //    throw Error('Cannot nest a PageObject inside of another base ElementCollection instance')
-        //}
-
+    performWithin(baseElement, nestedComponent, fn) {
         baseElement.within(() => fn(nestedComponent));
-    }
-
-    /**
-     * Useful for when we need to test multiple scoped or indexed ElementCollection instances by setting `_scopedIndex`.
-     * for creating element chains. "Cloning" the original allows us to avoid circular dependencies.
-     * @return clonedSelf {ElementCollection}
-     * @example <summary>Testing two different ElementCollection instances of a Material UI Accordion</summary>
-     *      scopedObject.components.AccordionObject(accordionObj => {
-     const firstAccordion = clone(accordionObj);
-     firstAccordion._scopedIndex = 0;
-     const secondAccordion = clone(accordionObj);
-     secondAccordion._scopedIndex = 1;
-     firstAccordion.container().click();
-     firstAccordion.container().should('have.class', 'Mui-expanded');
-     secondAccordion.should('have.not.class', 'Mui-expanded');
-     });
-     * @private
-     */
-    _clone(): ElementCollection {
-        return clone(this);
     }
 }

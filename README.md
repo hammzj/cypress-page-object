@@ -37,7 +37,7 @@ class ExamplePageObject extends PageObject {
     }
 
     FooterObject(fn) {
-        this._nestedComponent(this.container, new FooterObject(), fn);
+        this.performWithin(this.container, new FooterObject(), fn);
     }
 }
 
