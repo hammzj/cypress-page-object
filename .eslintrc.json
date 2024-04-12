@@ -12,7 +12,6 @@
   "extends": [
     "eslint:recommended",
     "eslint:recommended",
-    "prettier",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:mocha/recommended",
@@ -44,7 +43,6 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "prettier",
     "chai-friendly",
     "mocha"
   ],
@@ -63,6 +61,5 @@
     "no-case-declarations": "warn",
     "no-prototype-builtins": "off",
     "no-extra-semi": "off",
-    "prettier/prettier": "warn"
   }
 }
