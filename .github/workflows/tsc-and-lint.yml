@@ -1,0 +1,39 @@
+name: TypeScript checking and linting
+on:
+  pull_request:
+
+jobs:
+  tsc:
+    name: Check TypeScript
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup_node
+        with:
+          node-version: ${{ matrix.node-version }}
+          npm-auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Build
+        run: |
+          yarn install
+          yarn run dev:tsc
+
+  lint:
+    name: Run eslint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup_node
+        with:
+          node-version: ${{ matrix.node-version }}
+          npm-auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Build
+        run: |
+          yarn install
+          yarn run dev:lint
