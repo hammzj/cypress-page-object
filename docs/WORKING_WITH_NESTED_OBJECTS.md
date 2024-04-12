@@ -8,36 +8,36 @@ However, components may exist in multiple places on a page at once, and therefor
 Cypress incorrectly selecting the wrong instance. Therefore, nested components _need_ to be also be chained from an
 element selector existing inside of the parent object. Luckily, that's able to happen in an `ElementCollection`.
 
-## Nesting component objects with the `_nestedObject` utility function
+## Nesting component objects with the `performWithin` utility function
 
-A utility function exists in any `ElementCollection` instance named `_nestedObject`. This allows you to add a nested
+A utility function exists in any `ElementCollection` instance named `performWithin`. This allows you to add a nested
 component object/element collection to exist inside of your parent component/page object. Nested Objects should always
-be written in **SentenceCase**.
+be written in **PascalCase**.
 
-`this._nestedObject(baseElement, nestedObject, fn)`
+`this.performWithin(baseElement, nestedComponent, fn)`
 
 It accepts the following parameters:
 
 -   `baseElement`: an element selector existing on `this`
     -   Examples:
-        -   `this.container`
-        -   any static element selector
--   `nestedObject`: a new instance of the nested object class, containing any needed parameters in the constructor
+        -   `this.container()`
+        -   any static element selector (`this.elements.yourElementSelector()`)
+-   `nestedComponent`: a new instance of the nested object class, containing any needed parameters in the constructor
     -   Examples:
         -   a new instance of an `ElementCollection` or `ComponentObject`
         -   `new AccountFormObject()`
         -   `new AlertDialogObject('An error occurred')`: parameterized object
--   fn: this function must take the nestedObject as its parameter, and then it can perform Cypress commands
+-   fn: this function must take the nestedComponent as its parameter, and then it can perform Cypress commands
     -   Examples:
 
 ```js
-function fn(nestedObject) {
-    //Add cypress commands using the nestedObject here
+function fn(nestedComponent) {
+    //Add cypress commands using the nestedComponent here
 }
 
 //or
-(nestedObject) => {
-    //Add cypress commands using the nestedObject here
+(nestedComponent) => {
+    //Add cypress commands using the nestedComponent here
 };
 ```
 
@@ -49,11 +49,11 @@ import AccountFormObject from "../components/account.form.object";
 
 class CreateAccountPage extends PageObject {
     contructor() {
-        super(`/create-account`);
+        super({ path: `/create-account` });
     }
 
     AccountFormObject(fn) {
-        this._nestedObject(this.container, new AccountFormObject(), fn);
+        this.performWithin(this.container(), new AccountFormObject(), fn);
     }
 }
 ```
@@ -70,9 +70,9 @@ describe("Create Account Page", function () {
         cy.visit(createAccountPage.url());
 
         //This will submit the form with the given user details
-        createAccountPage.AccountFormObject(function (accountFormObject) {
-            accountFormObject.__fillInDetails(userDetails);
-            accountFormObject.submitButton.click();
+        createAccountPage.components.AccountFormObject(function (accountFormObject) {
+            accountFormObject.fillInDetails(userDetails);
+            accountFormObject.elements.submitButton().click();
         });
 
         cy.url().should("contain.text", "/success");
@@ -92,15 +92,16 @@ class ToggleButton extends ComponentObject {
 
 class SettingsObject extends ComponentObject {
     constructor() {
-        super(() => cy.get('div[id="settings"]'));
+        super(() => cy.get("div[id=\"settings\"]"));
     }
 
-    get displaySettingsForm() {
-        return this.container.find(`form#mode-selectors`);
-    }
+    public elements = {
+        displaySettingsForm: () => this.container().find(`form#mode-selectors`),
+
+    };
 
     ToggleButton(fn, buttonText) {
-        this._nestedObject(this.displaySettingsForm, new ToggleButton(buttonText), fn);
+        this.performWithin(this.elements.displaySettingsForm(), new ToggleButton(buttonText), fn);
     }
 }
 ```
@@ -113,11 +114,11 @@ describe("test", function () {
         cy.mount(<Settings />);
 
         const settingsObject = new SettingsObject();
-        settingsObject.ToggleButton(function (toggleButton) {
-            toggleButton.click();
+        settingsObject.components.ToggleButton(function (toggleButton) {
+            toggleButton.container().click();
         }, "Dark Mode");
         settingsObject.ToggleButton(function (toggleButton) {
-            toggleButton.click();
+            toggleButton.container().click();
         }, "24 Hour Clock");
 
         //Assume that a message displays whether a button is turned on
@@ -134,7 +135,7 @@ into its own `ComponentObject`, and nest the nested object inside of it.
 
 ## Nesting component objects using `cy.within()`
 
-The `_nestedObject` utility function does not need to be used to nest components. Instead, using Cypress' `within()` on
+The `performWithin` utility function does not need to be used to nest components. Instead, using Cypress' `within()` on
 the base element command will work just the same!
 
 ```js
@@ -143,12 +144,12 @@ import AccountFormObject from "../components/account.form.object";
 
 class CreateAccountPage extends PageObject {
     constructor() {
-        super(`/create-account`);
+        super({ path: `/create-account` });
     }
 
-    AccountFormObject(fn) {
-        this.container.within(() => fn(new AccountFormObject()));
-    }
+    public components = {
+        AccountFormObject: (fn) => this.container().within(() => fn(new AccountFormObject()))
+    };
 }
 ```
 
@@ -162,16 +163,16 @@ class ToggleButton extends ComponentObject {
 
 class SettingsObject extends ComponentObject {
     constructor() {
-        super(() => cy.get('div[id="settings"]'));
+        super(() => cy.get(`div[id="settings"]`));
     }
 
-    get displaySettingsForm() {
-        return this.container.find(`form#mode-selectors`);
-    }
+    public elements = {
+        displaySettingsForm: () => this.container.find(`form#mode-selectors`),
+    };
 
-    ToggleButton(fn, buttonText) {
-        this.displaySettingsForm.within(() => fn(new ToggleButton(buttonText)));
-    }
+    public components = {
+        ToggleButton: (fn) => this.elements.displaySettingsForm().within(() => fn(new ToggleButton(buttonText))),
+    };
 }
 ```
 
@@ -181,8 +182,8 @@ Then, you can use them in your test functions as you did before:
 const createAccountPage = new CreateAccountPage();
 //This will submit the form with the given user details
 createAccountPage.AccountFormObject((accountFormObject) => {
-    accountFormObject.__fillInDetails(userDetails);
-    accountFormObject.submitButton.click();
+    accountFormObject.fillInDetails(userDetails);
+    accountFormObject.elements.submitButton().click();
 });
 ```
 
@@ -191,9 +192,9 @@ createAccountPage.AccountFormObject((accountFormObject) => {
 ### Nested objects can also have their own nested objects
 
 ```js
-settingsPage.SettingsObject((settingsObject) => {
-    settingsPage.ToggleButton((toggleButton) => {
-        toggleButton.click();
+settingsPage.components.SettingsObject((settingsObject) => {
+    settingsPage.components.ToggleButton((toggleButton) => {
+        toggleButton.container().click();
     }, "Dark Mode");
 });
 ```

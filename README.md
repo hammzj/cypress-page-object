@@ -7,21 +7,17 @@ import {
     ElementCollection, //The generic class for defining element selectors
     ComponentObject, //Represents individual components made of element selectors and nested component objects
     PageObject, //Represents a webpage and its collection of both element selectors and component objects
-}  from "@hammzj/cypress-page-object";
-
-//Or CJS
-//import CypressPageObject from "@hammzj/cypress-page-object"
-//const {ElementCollection} = CypressPageObject;
+} from "@hammzj/cypress-page-object";
 
 class FooterObject extends ComponentObject {
     constructor() {
         super(() => cy.get(`footer`));
     }
-    
-    get copyright() {
-        return this.container.find(`p.MuiTypography-root`);
-    }
 
+    elements = {
+        ...this.elements,
+        copyright: () => this.container().find(`p.MuiTypography-root`),
+    };
 }
 
 class ExamplePageObject extends PageObject {
@@ -29,23 +25,23 @@ class ExamplePageObject extends PageObject {
         super();
     }
 
-    get appBar() {
-        return cy.get(`.MuiAppBar-root`);
-    }
+    elements = {
+        ...this.elements,
+        appBar: () => cy.get(`.MuiAppBar-root`),
+        appLink: (label: title) => this.elements.appBar().contains("a.MuiLink-root", label),
+    };
 
-    appLink(label) {
-        return this.appBar.contains("a.MuiLink-root", label);
-    }
+    components = {
+        FooterObject: (fn) => this.performWithin(this.container(), new FooterObject(), fn),
+    };
 
-    FooterObject(fn) {
-        this._nestedObject(this.container, new FooterObject(), fn);
-    }
 }
 
 const examplePageObject = new ExamplePageObject();
-examplePageObject.appLink('Features').should("exist");
-examplePageObject.FooterObject(footerObject => {
-   footerObject.copyright.should('have.text', 'Copyright @2024'); 
+examplePageObject.elements.appBar().should("exist");
+examplePageObject.elements.appLink("Features").should("exist");
+examplePageObject.components.FooterObject((footerObject) => {
+    footerObject.elements.copyright().should("have.text", "Copyright @2024");
 });
 ```
 
@@ -58,6 +54,7 @@ This package is hosted on the GitHub NPM package repository. Please add or updat
 ```
 
 Then, install as normal:
+
 ```
 npm install @hammzj/cypress-page-object
 #or
@@ -66,7 +63,7 @@ yarn add @hammzj/cypress-page-object
 
 ## The base class: `ElementCollection`
 
-*Note: All examples below have selectors for [MaterialUI](https://mui.com/material-ui/) root classes.*
+_Note: All examples below have selectors for [MaterialUI](https://mui.com/material-ui/) root classes._
 
 An "element collection" is what the name implies: it is a collection of element selectors, class properties, utility
 functions, and application actions, that define how Cypress can interact with a component or page in an application.
@@ -98,13 +95,16 @@ class SearchForm extends ElementCollection {
 
 **Note: If a base container function is not supplied, the scope is rendered to the entire HTML document.**
 
-### Find basic element selectors with a "getter"
+### Place element selectors in an `elements` object
 
 Base elements are locators for HTML elements on the webpage. They should exist as chained from the base container, or
 another element selector in the collection.
 
-"Getters" represent a static element, or array of elements, that can be returned. They should be written as **
-camelCase**:
+These are defined in `this.elements`. You can either extend the original elements with `this.elements = { ...this.elements, ... }`
+or use `Object.assign(this.elements, { ... })` inside the class constructor.
+
+<details>
+<summary>Setting elements</summary>
 
 ```js
 class NewUserForm extends ElementCollection {
@@ -113,24 +113,49 @@ class NewUserForm extends ElementCollection {
         super(() => cy.get("form#new-user"));
     }
 
-    get usernameField() {
+    public elements = {
         //An element selector chained from another element selector -- selects the first found "input"
-        return this.container.find(`input`).first();
-    }
+        usernameField: () => this.container().find(`input`).first(),
+        passwordField: () =>  this.elements.usernameField().next(),
+        //Some selectors can return many elements at once!
+        fieldErrors: () => {  //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
+            //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
+            //@see https://docs.cypress.io/api/commands/eq
 
-    get passwordField() {
-        return this.usernameField.next();
-    }
-
-    //Getters can return many elements at once!
-    get fieldErrors() {
-        //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
-        //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
-        //@see https://docs.cypress.io/api/commands/eq
-        return this.container.find(`div.error`);
+            return this.container().find(`div.error`);
+        }
     }
 }
 ```
+
+</details>
+
+<details>
+<summary>Alternate way of setting elements</summary>
+
+```js
+class NewUserForm extends ElementCollection {
+    constructor() {
+        //This is the base container function for the address form
+        super(() => cy.get("form#new-user"));
+        Object.assign(this.elements, {
+            //An element selector chained from another element selector -- selects the first found "input"
+            usernameField: () => this.container().find(`input`).first(),
+            passwordField: () => this.elements.usernameField().next(),
+            //Some selectors can return many elements at once!
+            fieldErrors: () => {
+                //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
+                //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
+                //@see https://docs.cypress.io/api/commands/eq
+
+                return this.container().find(`div.error`);
+            },
+        });
+    }
+}
+```
+
+</details>
 
 ### Find specific element selectors with a parameterized function
 
@@ -144,10 +169,10 @@ class SelectAnShippingOptionObject extends ElementCollection {
         super(() => cy.get(`form#select-a-shipping-partner`));
     }
 
-    radioButton(text) {
-        //Finds the button based on its text
-        return this.container.contains(`button[type="radio"]`, text);
-    }
+    public elements = {
+        //Finds the radio button based on its text
+        radioButton: (text) => this.container().contains(`button[type="radio"]`, text),
+    };
 }
 ```
 
@@ -159,11 +184,9 @@ chained off of a base element.
 
 _See more here: [WORKING_WITH_NESTED_OBJECTS.md](docs/WORKING_WITH_NESTED_OBJECTS.md)_.
 
-### Perform application actions as functions written with double underscores
+### Perform application actions as functions
 
-Element collections reserve utility methods to be provided with single underscores, like `_clone`.
-
-**When adding an app action, use double underscores, like `__fillInForm(props)`**.
+App action functions allow you to execute flows and perform validations.
 
 ```js
 const { ComponentObject } = require("@hammzj/cypress-page-object");
@@ -173,26 +196,23 @@ class SearchForm extends ComponentObject {
         super(() => cy.get(`form#location-search-form`));
     }
 
-    get inputField() {
-        return this.container.find('input[type="text"]');
-    }
-
-    get submitButton() {
-        return this.container.find(`button[type="submit"]`);
-    }
+    public elements = {
+        inputField: () => this.container().find(`input[type="text"]`),
+        submitButton: () => this.container().find(`button[type="submit"]`),
+    };
 
     //An app action to search for text using the form
-    __search(text, submit = true) {
-        this.inputField.type(text);
+    search(text, submit = true) {
+        this.elements.inputField().type(text);
         if (submit === true) {
-            this.submitButton.click();
+            this.elements.submitButton().click();
         }
     }
 }
 
 //...
 const searchForm = new SearchForm();
-searchForm.__search("events happening in New York City");
+searchForm.search("events happening in New York City");
 ```
 
 ## The `ComponentObject` class
@@ -265,8 +285,8 @@ class PaymentTypeButton extends ComponentObject {
 
 ## The `PageObject` class
 
-A page object represents an entire page of an application, consisting of many element selectors, nested components, and
-possibly their own app actions and assertions that can utilize multiple nested components at once. They also have their
+A page object represents an entire page of an application, which can consist of page metadata, element selectors, nested components, and
+their own app actions and assertions that can utilize multiple nested components at once. They also have their
 own url paths that can be set and defined. URLs with replaceable path variables are also allowed, and functions exist to
 assist with constructing them.
 
@@ -280,33 +300,32 @@ exactly every input that needs substitution.
 
 ```js
 const { PageObject } = require("@hammzj/cypress-page-object");
-const baseUrl = `http://localhost:3000`;
 
 class UserPostsPage extends PageObject {
     constructor() {
-        super(`/user/:userId/post/:postId`);
+        super({ path: `/user/:userId/post/:postId`, baseUrl: `http://localhost:3000` });
     }
 }
 
 const userPostsPage = new UserPostsPage();
-userPostsPage._customPathUrl("1234", "post-9876"); //=> "http://localhost:3000/user/1234/post/post-9876"
+userPostsPage.url("1234", "post-9876"); //=> "http://localhost:3000/user/1234/post/post-9876"
 ```
 
 #### Example 2: a path without variables
 
 ```js
 const { PageObject } = require("@hammzj/cypress-page-object");
-const baseUrl = `http://localhost:3000`;
+//Cypress.config().baseUrl = `http://localhost:3000`;
 
 class PrivacySettingsPage extends PageObject {
     constructor() {
-        super(`/settings/privacy`);
+        super({ path: `/settings/privacy` });
     }
 }
 
 const privacySettingsPage = new PrivacySettingsPage();
 //Works, but will log an error to the console since there are no variables, or not enough variables, to replace
-privacySettingsPage._customPathUrl("1234"); //=> "http://localhost:3000/settings/privacy"
+privacySettingsPage.url("1234"); //=> "http://localhost:3000/settings/privacy"
 ```
 
 ---
@@ -338,6 +357,10 @@ yarn test:cypress:open:e2e
 
 # After testing, end the server with "Ctrl + C"
 ```
+
+## TypeScript support
+
+All typings are included in `/src/types`, but class types are found in their corresponding source file like `ElementCollection` in `/src/element.collection`.
 
 ## Notes
 

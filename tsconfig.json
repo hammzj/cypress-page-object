@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es6",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "declaration": true,
+    "types": [
+      "cypress",
+      "node"
+    ],
+    "sourceMap": false,
+    "allowJs": true,
+    "jsx": "react",
+    "strict": false,
+    "rootDir": ".",
+    "outDir": "build/dist",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+
+  "types": [
+    "typePatches"
+  ]
+}

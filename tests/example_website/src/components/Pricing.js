@@ -1,35 +1,48 @@
-import * as React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import StarIcon from "@mui/icons-material/StarBorder";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import GlobalStyles from "@mui/material/GlobalStyles";
-import Container from "@mui/material/Container";
-
+"use strict";
+var __assign =
+    (this && this.__assign) ||
+    function () {
+        __assign =
+            Object.assign ||
+            function (t) {
+                for (var s, i = 1, n = arguments.length; i < n; i++) {
+                    s = arguments[i];
+                    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+                }
+                return t;
+            };
+        return __assign.apply(this, arguments);
+    };
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var styles_1 = require("@mui/material/styles");
+var AppBar_1 = require("@mui/material/AppBar");
+var Box_1 = require("@mui/material/Box");
+var Button_1 = require("@mui/material/Button");
+var Card_1 = require("@mui/material/Card");
+var CardActions_1 = require("@mui/material/CardActions");
+var CardContent_1 = require("@mui/material/CardContent");
+var CardHeader_1 = require("@mui/material/CardHeader");
+var CssBaseline_1 = require("@mui/material/CssBaseline");
+var Grid_1 = require("@mui/material/Grid");
+var StarBorder_1 = require("@mui/icons-material/StarBorder");
+var Toolbar_1 = require("@mui/material/Toolbar");
+var Typography_1 = require("@mui/material/Typography");
+var Link_1 = require("@mui/material/Link");
+var GlobalStyles_1 = require("@mui/material/GlobalStyles");
+var Container_1 = require("@mui/material/Container");
 function Copyright(props) {
-    return (
-        <Typography variant='body2' color='text.secondary' align='center' {...props}>
-            {"Copyright © "}
-            <Link color='inherit' href='https://mui.com/'>
-                Your Website
-            </Link>{" "}
-            {new Date().getFullYear()}
-            {"."}
-        </Typography>
+    return React.createElement(
+        Typography_1.default,
+        __assign({ variant: "body2", color: "text.secondary", align: "center" }, props),
+        "Copyright © ",
+        React.createElement(Link_1.default, { color: "inherit", href: "#" }, "Your Website"),
+        " ",
+        new Date().getFullYear(),
+        "."
     );
 }
-
-const tiers = [
+var tiers = [
     {
         title: "Free",
         price: "0",
@@ -53,8 +66,7 @@ const tiers = [
         buttonVariant: "outlined",
     },
 ];
-
-const footers = [
+var footers = [
     {
         title: "Company",
         description: ["Team", "History", "Contact us", "Locations"],
@@ -72,135 +84,202 @@ const footers = [
         description: ["Privacy policy", "Terms of use"],
     },
 ];
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
-
-export default function Pricing() {
-    return (
-        <ThemeProvider theme={defaultTheme}>
-            <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }} />
-            <CssBaseline />
-            <AppBar
-                position='static'
-                color='default'
-                elevation={0}
-                sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}>
-                <Toolbar sx={{ flexWrap: "wrap" }}>
-                    <Typography variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
-                        Company name
-                    </Typography>
-                    <nav>
-                        <Link variant='button' color='text.primary' href='#' sx={{ my: 1, mx: 1.5 }}>
-                            Features
-                        </Link>
-                        <Link variant='button' color='text.primary' href='#' sx={{ my: 1, mx: 1.5 }}>
-                            Enterprise
-                        </Link>
-                        <Link variant='button' color='text.primary' href='#' sx={{ my: 1, mx: 1.5 }}>
-                            Support
-                        </Link>
-                    </nav>
-                    <Button href='#' variant='outlined' sx={{ my: 1, mx: 1.5 }}>
-                        Login
-                    </Button>
-                </Toolbar>
-            </AppBar>
-            {/* Hero unit */}
-            <Container disableGutters maxWidth='sm' component='main' sx={{ pt: 8, pb: 6 }}>
-                <Typography component='h1' variant='h2' align='center' color='text.primary' gutterBottom>
-                    Pricing
-                </Typography>
-                <Typography variant='h5' align='center' color='text.secondary' component='p'>
-                    Quickly build an effective pricing table for your potential customers with this layout. It&apos;s
-                    built with default MUI components with little customization.
-                </Typography>
-            </Container>
-            {/* End hero unit */}
-            <Container maxWidth='md' component='main'>
-                <Grid container spacing={5} alignItems='flex-end'>
-                    {tiers.map((tier) => (
+var defaultTheme = (0, styles_1.createTheme)();
+function Pricing() {
+    return React.createElement(
+        styles_1.ThemeProvider,
+        { theme: defaultTheme },
+        React.createElement(GlobalStyles_1.default, { styles: { ul: { margin: 0, padding: 0, listStyle: "none" } } }),
+        React.createElement(CssBaseline_1.default, null),
+        React.createElement(
+            AppBar_1.default,
+            {
+                position: "static",
+                color: "default",
+                elevation: 0,
+                sx: {
+                    borderBottom: function (theme) {
+                        return "1px solid ".concat(theme.palette.divider);
+                    },
+                },
+            },
+            React.createElement(
+                Toolbar_1.default,
+                { sx: { flexWrap: "wrap" } },
+                React.createElement(
+                    Typography_1.default,
+                    { variant: "h6", color: "inherit", noWrap: true, sx: { flexGrow: 1 } },
+                    "Company name"
+                ),
+                React.createElement(
+                    "nav",
+                    null,
+                    React.createElement(
+                        Link_1.default,
+                        { variant: "button", color: "text.primary", href: "#", sx: { my: 1, mx: 1.5 } },
+                        "Features"
+                    ),
+                    React.createElement(
+                        Link_1.default,
+                        { variant: "button", color: "text.primary", href: "#", sx: { my: 1, mx: 1.5 } },
+                        "Enterprise"
+                    ),
+                    React.createElement(
+                        Link_1.default,
+                        { variant: "button", color: "text.primary", href: "#", sx: { my: 1, mx: 1.5 } },
+                        "Support"
+                    )
+                ),
+                React.createElement(
+                    Button_1.default,
+                    { href: "#", variant: "outlined", sx: { my: 1, mx: 1.5 } },
+                    "Login"
+                )
+            )
+        ),
+        React.createElement(
+            Container_1.default,
+            { disableGutters: true, maxWidth: "sm", component: "main", sx: { pt: 8, pb: 6 } },
+            React.createElement(
+                Typography_1.default,
+                { component: "h1", variant: "h2", align: "center", color: "text.primary", gutterBottom: true },
+                "Pricing"
+            ),
+            React.createElement(
+                Typography_1.default,
+                { variant: "h5", align: "center", color: "text.secondary", component: "p" },
+                "Quickly build an effective pricing table for your potential customers with this layout. It's built with default MUI components with little customization."
+            )
+        ),
+        React.createElement(
+            Container_1.default,
+            { maxWidth: "md", component: "main" },
+            React.createElement(
+                Grid_1.default,
+                { container: true, spacing: 5, alignItems: "flex-end" },
+                tiers.map(function (tier) {
+                    return (
                         // Enterprise card is full width at sm breakpoint
-                        <Grid item key={tier.title} xs={12} sm={tier.title === "Enterprise" ? 12 : 6} md={4}>
-                            <Card>
-                                <CardHeader
-                                    title={tier.title}
-                                    subheader={tier.subheader}
-                                    titleTypographyProps={{ align: "center" }}
-                                    action={tier.title === "Pro" ? <StarIcon /> : null}
-                                    subheaderTypographyProps={{
+                        React.createElement(
+                            Grid_1.default,
+                            { item: true, key: tier.title, xs: 12, sm: tier.title === "Enterprise" ? 12 : 6, md: 4 },
+                            React.createElement(
+                                Card_1.default,
+                                null,
+                                React.createElement(CardHeader_1.default, {
+                                    title: tier.title,
+                                    subheader: tier.subheader,
+                                    titleTypographyProps: { align: "center" },
+                                    action:
+                                        tier.title === "Pro" ? React.createElement(StarBorder_1.default, null) : null,
+                                    subheaderTypographyProps: {
                                         align: "center",
-                                    }}
-                                    sx={{
-                                        backgroundColor: (theme) =>
-                                            theme.palette.mode === "light"
-                                                ? theme.palette.grey[200]
-                                                : theme.palette.grey[700],
-                                    }}
-                                />
-                                <CardContent>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "baseline",
-                                            mb: 2,
-                                        }}>
-                                        <Typography component='h2' variant='h3' color='text.primary'>
-                                            ${tier.price}
-                                        </Typography>
-                                        <Typography variant='h6' color='text.secondary'>
-                                            /mo
-                                        </Typography>
-                                    </Box>
-                                    <ul>
-                                        {tier.description.map((line) => (
-                                            <Typography component='li' variant='subtitle1' align='center' key={line}>
-                                                {line}
-                                            </Typography>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                                <CardActions>
-                                    <Button fullWidth variant={tier.buttonVariant}>
-                                        {tier.buttonText}
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-            {/* Footer */}
-            <Container
-                maxWidth='md'
-                component='footer'
-                sx={{
-                    borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+                                    },
+                                    sx: {
+                                        backgroundColor: function (theme) {
+                                            return theme.palette.mode === "light" ?
+                                                    theme.palette.grey[200]
+                                                :   theme.palette.grey[700];
+                                        },
+                                    },
+                                }),
+                                React.createElement(
+                                    CardContent_1.default,
+                                    null,
+                                    React.createElement(
+                                        Box_1.default,
+                                        {
+                                            sx: {
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "baseline",
+                                                mb: 2,
+                                            },
+                                        },
+                                        React.createElement(
+                                            Typography_1.default,
+                                            { component: "h2", variant: "h3", color: "text.primary" },
+                                            "$",
+                                            tier.price
+                                        ),
+                                        React.createElement(
+                                            Typography_1.default,
+                                            { variant: "h6", color: "text.secondary" },
+                                            "/mo"
+                                        )
+                                    ),
+                                    React.createElement(
+                                        "ul",
+                                        null,
+                                        tier.description.map(function (line) {
+                                            return React.createElement(
+                                                Typography_1.default,
+                                                { component: "li", variant: "subtitle1", align: "center", key: line },
+                                                line
+                                            );
+                                        })
+                                    )
+                                ),
+                                React.createElement(
+                                    CardActions_1.default,
+                                    null,
+                                    React.createElement(
+                                        Button_1.default,
+                                        { fullWidth: true, variant: tier.buttonVariant },
+                                        tier.buttonText
+                                    )
+                                )
+                            )
+                        )
+                    );
+                })
+            )
+        ),
+        React.createElement(
+            Container_1.default,
+            {
+                maxWidth: "md",
+                component: "footer",
+                sx: {
+                    borderTop: function (theme) {
+                        return "1px solid ".concat(theme.palette.divider);
+                    },
                     mt: 8,
                     py: [3, 6],
-                }}>
-                <Grid container spacing={4} justifyContent='space-evenly'>
-                    {footers.map((footer) => (
-                        <Grid item xs={6} sm={3} key={footer.title}>
-                            <Typography variant='h6' color='text.primary' gutterBottom>
-                                {footer.title}
-                            </Typography>
-                            <ul>
-                                {footer.description.map((item) => (
-                                    <li key={item}>
-                                        <Link href='#' variant='subtitle1' color='text.secondary'>
-                                            {item}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Grid>
-                    ))}
-                </Grid>
-                <Copyright sx={{ mt: 5 }} />
-            </Container>
-            {/* End footer */}
-        </ThemeProvider>
+                },
+            },
+            React.createElement(
+                Grid_1.default,
+                { container: true, spacing: 4, justifyContent: "space-evenly" },
+                footers.map(function (footer) {
+                    return React.createElement(
+                        Grid_1.default,
+                        { item: true, xs: 6, sm: 3, key: footer.title },
+                        React.createElement(
+                            Typography_1.default,
+                            { variant: "h6", color: "text.primary", gutterBottom: true },
+                            footer.title
+                        ),
+                        React.createElement(
+                            "ul",
+                            null,
+                            footer.description.map(function (item) {
+                                return React.createElement(
+                                    "li",
+                                    { key: item },
+                                    React.createElement(
+                                        Link_1.default,
+                                        { href: "#", variant: "subtitle1", color: "text.secondary" },
+                                        item
+                                    )
+                                );
+                            })
+                        )
+                    );
+                })
+            ),
+            React.createElement(Copyright, { sx: { mt: 5 } })
+        )
     );
 }
+exports.default = Pricing;
