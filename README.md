@@ -338,6 +338,11 @@ privacySettingsPage.url("1234"); //=> "http://localhost:3000/settings/privacy"
 
 ## Development
 
+### Installation
+
+-   Run `npm install` or `yarn`
+-   Run the script, `dev:postinstall` to install git hooks
+
 ### Example tests
 
 Examples of using page objects and component objects can be found in `/tests/cypress/e2e`. The spec contains many
@@ -364,7 +369,7 @@ yarn test:cypress:open:e2e
 # After testing, end the server with "Ctrl + C"
 ```
 
-## TypeScript support
+### TypeScript support
 
 All typings are included in `/src/types`, but class types are found in their corresponding source file
 like `ElementCollection` in `/src/element.collection`.
