@@ -32,7 +32,6 @@
     "node_modules",
     "scripts",
     "webpack",
-    "tests/**/*"
   ],
   "paths": {
     "@hammzj/cypress-page-object": [

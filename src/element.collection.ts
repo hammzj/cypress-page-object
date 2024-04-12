@@ -1,4 +1,5 @@
 import { isNil } from "lodash";
+import JQueryWithSelector = Cypress.JQueryWithSelector;
 
 export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector>;
 export type ComponentObjectFunction = (instance: ElementCollection) => void;
@@ -130,9 +131,9 @@ export default class ElementCollection {
     /**
      * A nested component object is one that exists within the container of its parent/base object. It cannot be found outside of its parent's container.
      * A nestedComponent can also contain its own nestedComponents.
-     * @param baseElement {any} an element selector existing on `this`
+     * @param baseElement {Cypress.Chainable<JQueryWithSelector>} an element selector from `this.elements`
      * @param nestedComponent {ElementCollection|ComponentObject} a `new` instance of the nested object, containing any parameters necessary
-     * @param fn {function} this function must take the nestedComponent as its parameter, and then it can perform Cypress commands
+     * @param fn {ComponentObjectFunction} this function must take the nestedComponent as its parameter, and then it can perform Cypress commands
      * @returns {void}
      * on that nested object.
      *
@@ -169,7 +170,11 @@ export default class ElementCollection {
      *   this.elements.form().within(() => fn(new RadioButtonObject(buttonText)));
      * }
      */
-    performWithin(baseElement, nestedComponent, fn) {
+    performWithin(
+        baseElement: Cypress.Chainable<JQueryWithSelector>,
+        nestedComponent: ElementCollection,
+        fn: ComponentObjectFunction
+    ): void {
         baseElement.within(() => fn(nestedComponent));
     }
 }
