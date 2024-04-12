@@ -47,7 +47,10 @@ examplePageObject.components.FooterObject((footerObject) => {
 
 ## Installation
 
-This package is hosted on the GitHub NPM package repository. Please add or update your `.npmrc` file with the following:
+This package is hosted on both the NPMJS registry and the GitHub NPM package repository.
+
+If installing from GitHub, please add or update
+your `.npmrc` file with the following:
 
 ```
 @hammzj:registry=https://npm.pkg.github.com
@@ -335,6 +338,11 @@ privacySettingsPage.url("1234"); //=> "http://localhost:3000/settings/privacy"
 
 ## Development
 
+### Installation
+
+-   Run `npm install` or `yarn`
+-   Run the script, `dev:postinstall` to install git hooks
+
 ### Example tests
 
 Examples of using page objects and component objects can be found in `/tests/cypress/e2e`. The spec contains many
@@ -360,13 +368,6 @@ yarn test:cypress:open:e2e
 
 # After testing, end the server with "Ctrl + C"
 ```
-
-## Development
-
-## Installation
-
--   Run `npm install` or `yarn`
--   Run the script, `dev:postinstall` to install git hooks
 
 ### TypeScript support
 
