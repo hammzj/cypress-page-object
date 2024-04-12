@@ -2,20 +2,26 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "commonjs",
+    "moduleResolution": "node",
     "target": "es6",
     "lib": [
       "es6",
       "dom"
     ],
+    "declaration": true,
     "types": [
       "cypress",
       "node"
     ],
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@index": ["index.ts"],
+      "@types/*": ["./src/types/*"],
+    },
     "sourceMap": false,
     "allowJs": true,
     "jsx": "react",
     "strict": false,
-    "moduleResolution": "node",
     "rootDir": ".",
     "outDir": "build/dist",
     "noImplicitReturns": true,
@@ -27,11 +33,7 @@
   "include": [
     "src/**/*"
   ],
-  "paths": {
-    "src/*": [
-      "src/*"
-    ]
-  },
+
   "types": [
     "typePatches"
   ]

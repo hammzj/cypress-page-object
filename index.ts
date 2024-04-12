@@ -1,2 +1,1 @@
-import { ElementCollection, PageObject, ComponentObject } from "./src";
-export { ElementCollection, PageObject, ComponentObject };
+export * from "./src";
