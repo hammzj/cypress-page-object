@@ -47,7 +47,10 @@ examplePageObject.components.FooterObject((footerObject) => {
 
 ## Installation
 
-This package is hosted on the GitHub NPM package repository. Please add or update your `.npmrc` file with the following:
+This package is hosted on both the NPMJS registry and the GitHub NPM package repository.
+
+If installing from GitHub, please add or update
+your `.npmrc` file with the following:
 
 ```
 @hammzj:registry=https://npm.pkg.github.com
@@ -100,7 +103,8 @@ class SearchForm extends ElementCollection {
 Base elements are locators for HTML elements on the webpage. They should exist as chained from the base container, or
 another element selector in the collection.
 
-These are defined in `this.elements`. You can either extend the original elements with `this.elements = { ...this.elements, ... }`
+These are defined in `this.elements`. You can either extend the original elements
+with `this.elements = { ...this.elements, ... }`
 or use `Object.assign(this.elements, { ... })` inside the class constructor.
 
 <details>
@@ -116,7 +120,7 @@ class NewUserForm extends ElementCollection {
     public elements = {
         //An element selector chained from another element selector -- selects the first found "input"
         usernameField: () => this.container().find(`input`).first(),
-        passwordField: () =>  this.elements.usernameField().next(),
+        passwordField: () => this.elements.usernameField().next(),
         //Some selectors can return many elements at once!
         fieldErrors: () => {  //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
             //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
@@ -285,7 +289,8 @@ class PaymentTypeButton extends ComponentObject {
 
 ## The `PageObject` class
 
-A page object represents an entire page of an application, which can consist of page metadata, element selectors, nested components, and
+A page object represents an entire page of an application, which can consist of page metadata, element selectors, nested
+components, and
 their own app actions and assertions that can utilize multiple nested components at once. They also have their
 own url paths that can be set and defined. URLs with replaceable path variables are also allowed, and functions exist to
 assist with constructing them.
@@ -315,6 +320,7 @@ userPostsPage.url("1234", "post-9876"); //=> "http://localhost:3000/user/1234/po
 
 ```js
 const { PageObject } = require("@hammzj/cypress-page-object");
+
 //Cypress.config().baseUrl = `http://localhost:3000`;
 
 class PrivacySettingsPage extends PageObject {
@@ -360,7 +366,8 @@ yarn test:cypress:open:e2e
 
 ## TypeScript support
 
-All typings are included in `/src/types`, but class types are found in their corresponding source file like `ElementCollection` in `/src/element.collection`.
+All typings are included in `/src/types`, but class types are found in their corresponding source file
+like `ElementCollection` in `/src/element.collection`.
 
 ## Notes
 
