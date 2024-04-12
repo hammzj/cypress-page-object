@@ -1,5 +1,6 @@
 import { gt, isEqual } from "lodash";
-import ElementCollection, { BaseContainerFunction } from "./element.collection";
+import ElementCollection from "./element.collection";
+import { BaseContainerFunction } from "./types/element.collection";
 
 /**
  * A component object is useful when building websites using components.

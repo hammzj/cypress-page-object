@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "commonjs",
     "target": "es6",
     "lib": [
@@ -23,19 +24,12 @@
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true
   },
-  "exclude": [
-    "build",
-    "acceptance-tests",
-    "cypress.config",
-    "cypress",
-    "jest",
-    "node_modules",
-    "scripts",
-    "webpack",
+  "include": [
+    "src/**/*"
   ],
   "paths": {
-    "@hammzj/cypress-page-object": [
-      "./src/*"
+    "src/*": [
+      "src/*"
     ]
   },
   "types": [

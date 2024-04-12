@@ -361,6 +361,10 @@ yarn test:cypress:open:e2e
 # After testing, end the server with "Ctrl + C"
 ```
 
+## TypeScript support
+
+All typings are included in `/src/types`, but class types are found in their corresponding source file like `ElementCollection` in `/src/element.collection`.
+
 ## Notes
 
 Cypress advises

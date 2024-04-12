@@ -1,17 +1,12 @@
 import { isNil } from "lodash";
+import {
+    BaseContainerFunction,
+    ComponentObjectFunction,
+    Elements,
+    NestedComponents,
+    IMetadata,
+} from "./types/element.collection";
 import JQueryWithSelector = Cypress.JQueryWithSelector;
-
-export type BaseContainerFunction = () => Cypress.Chainable<Cypress.JQueryWithSelector>;
-export type ComponentObjectFunction = (instance: ElementCollection) => void;
-export type Elements = {
-    [key: string]: (...params: any) => Cypress.Chainable<Cypress.JQueryWithSelector>;
-};
-export type NestedComponents = {
-    [key: string]: (fn: ComponentObjectFunction, ...params: any) => void;
-};
-export interface IMetadata {
-    [key: string]: any;
-}
 
 /**
  * Base class for describing page objects and components, which have a collection of element selectors

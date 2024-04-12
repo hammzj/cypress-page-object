@@ -1,13 +1,6 @@
-import ElementCollection from "./element.collection";
 import { isNil } from "lodash";
-
-export interface IPageMetadata {
-    baseUrl: string;
-    path: string | "";
-    title?: string;
-
-    [key: string]: any;
-}
+import ElementCollection from "./element.collection";
+import { IPageMetadata } from "./types/page.object";
 
 class UnexpectedNestedPageObjectError extends Error {
     constructor() {
