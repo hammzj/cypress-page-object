@@ -37,7 +37,6 @@
     "test:cypress:open:e2e": "cypress open --e2e --browser electron",
     "test:cypress:run:e2e": "cypress run --e2e  --browser electron"
   },
-  "types": "./build/dist/src/index.d.ts",
   "dependencies": {
     "lodash": "^4.17.21"
   },

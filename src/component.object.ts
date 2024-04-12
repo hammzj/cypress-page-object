@@ -1,5 +1,5 @@
-import { BaseContainerFunction } from "@src/types/element.collection";
 import { gt, isEqual } from "lodash";
+import { BaseContainerFunction } from "./types";
 import ElementCollection from "./element.collection";
 
 /**

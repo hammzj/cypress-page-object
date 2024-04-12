@@ -1,5 +1,5 @@
-import { PageObject, ComponentObject } from "@index";
-import { ComponentObjectFunction, Elements, NestedComponents } from "@src/types/element.collection";
+import { PageObject, ComponentObject } from "../../../index";
+import { ComponentObjectFunction, Elements, NestedComponents } from "../../../src";
 
 describe("Element collections", function () {
     beforeEach(function () {

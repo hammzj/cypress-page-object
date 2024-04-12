@@ -1,16 +1,10 @@
-import {
-    BaseContainerFunction,
-    ComponentObjectFunction,
-    Elements,
-    NestedComponents,
-    IMetadata,
-} from "@src/types/element.collection";
+import { BaseContainerFunction, ComponentObjectFunction, Elements, NestedComponents, IMetadata } from "./types";
 import { isNil } from "lodash";
 
 /**
  * Base class for describing page objects and components, which have a collection of element selectors
  */
-export default class ElementCollection {
+export default abstract class ElementCollection {
     protected _baseContainerFn: BaseContainerFunction;
     protected _scopedIndex?: number;
     protected metadata: Partial<IMetadata>;

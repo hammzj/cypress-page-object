@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es6",
@@ -13,11 +12,6 @@
       "cypress",
       "node"
     ],
-    "paths": {
-      "@src/*": ["./src/*"],
-      "@index": ["index.ts"],
-      "@types/*": ["./src/types/*"],
-    },
     "sourceMap": false,
     "allowJs": true,
     "jsx": "react",

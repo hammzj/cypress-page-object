@@ -1,4 +1,4 @@
-import { IMetadata } from "@src/types/element.collection";
+import { IMetadata } from "./element.collection";
 
 export interface IPageMetadata extends IMetadata {
     title?: string;

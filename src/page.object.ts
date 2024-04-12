@@ -1,5 +1,5 @@
-import { IPageMetadata } from "@src/types/page.object";
 import { isNil } from "lodash";
+import { IPageMetadata } from "./types";
 import ElementCollection from "./element.collection";
 
 class UnexpectedNestedPageObjectError extends Error {
