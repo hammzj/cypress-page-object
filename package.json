@@ -27,6 +27,7 @@
     "README.md"
   ],
   "scripts": {
+    "dev:tsc": "tsc",
     "dev:lint": "eslint . --ext .js,.ts",
     "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\"",
     "postinstall": "husky install",
