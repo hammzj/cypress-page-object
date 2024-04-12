@@ -1,5 +1,5 @@
 import { PageObject, ComponentObject } from "../../../src";
-import { ComponentObjectFunction } from "../../../src/element.collection";
+import { ComponentObjectFunction, Elements, NestedComponents } from "../../../src/element.collection";
 
 describe("Element collections", function () {
     beforeEach(function () {
@@ -610,7 +610,7 @@ describe("Element collections", function () {
                 copyright: () => this.container().find(`p.MuiTypography-root`),
             };
             components = {
-                LinkListObject: (title, fn) =>
+                LinkListObject: (fn, title: string) =>
                     this.performWithin(this.elements.gridLayout(), new LinkListObject(title), fn),
             };
 
@@ -625,18 +625,18 @@ describe("Element collections", function () {
                 super();
             }
 
-            elements = {
+            elements: Elements = {
                 ...this.elements,
                 main: () => this.container().find("main").first(),
                 contentTitle: () => this.elements.main().find("h1").first(),
                 contentDescription: () => this.elements.contentTitle().next(),
             };
 
-            components = {
+            components: NestedComponents = {
                 AppBar: (fn) => {
                     this.performWithin(this.container(), new AppBar(), fn);
                 },
-                PricingCardObject: (title, fn) => {
+                PricingCardObject: (fn, title: string) => {
                     this.performWithin(this.container(), new PricingCardObject(title), fn);
                 },
                 FooterObject: (fn) => {
@@ -659,34 +659,34 @@ describe("Element collections", function () {
 
         specify("Page objects can have nested component objects", function () {
             cy.log("This is a full example of putting it all together");
-            examplePageObject.components.AppBar((appBar) => {
+            examplePageObject.components.AppBar((appBar: AppBar) => {
                 appBar.elements.loginButton().should("exist");
                 appBar.elements.link("Features").should("exist");
                 appBar.elements.link("Enterprise").should("exist");
                 appBar.elements.link("Support").should("exist");
             });
-            examplePageObject.components.PricingCardObject("Free", (pricingCardObject) => {
-                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject) => {
+            examplePageObject.components.PricingCardObject((pricingCardObject: PricingCardObject) => {
+                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject: PricingHeaderObject) => {
                     pricingHeaderObject.elements.starIcon().should("not.exist");
                     pricingCardObject.elements.pricing().should("have.text", "Sign up for free");
                 });
-            });
-            examplePageObject.components.PricingCardObject("Pro", (pricingCardObject) => {
-                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject) => {
+            }, "Free");
+            examplePageObject.components.PricingCardObject((pricingCardObject: PricingCardObject) => {
+                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject: PricingHeaderObject) => {
                     pricingHeaderObject.elements.starIcon().should("exist");
                     pricingCardObject.elements.pricing().should("have.text", "Get started");
                 });
-            });
-            examplePageObject.components.PricingCardObject("Enterprise", (pricingCardObject) => {
-                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject) => {
+            }, "Pro");
+            examplePageObject.components.PricingCardObject((pricingCardObject: PricingCardObject) => {
+                pricingCardObject.components.PricingHeaderObject((pricingHeaderObject: PricingHeaderObject) => {
                     pricingHeaderObject.elements.starIcon().should("not.exist");
                     pricingCardObject.elements.pricing().should("have.text", "Contact us");
                 });
-            });
-            examplePageObject.components.FooterObject((footerObject) => {
-                footerObject.components.LinkListObject("Company", (linkListObject) => {
+            }, "Enterprise");
+            examplePageObject.components.FooterObject((footerObject: FooterObject) => {
+                footerObject.components.LinkListObject((linkListObject: LinkListObject) => {
                     linkListObject.assertLinksInOrder("Team", "History", "Contact us", "Locations");
-                });
+                }, "Company");
             });
         });
 
@@ -715,7 +715,9 @@ describe("Element collections", function () {
 
             const parentPageObject = new ParentPageObject();
             expect(() =>
-                parentPageObject.components.AnotherPageObject((anotherPageObject) => cy.log(anotherPageObject))
+                parentPageObject.components.AnotherPageObject((anotherPageObject: AnotherPageObject) =>
+                    cy.log(anotherPageObject.constructor.name)
+                )
             ).to.throw("Page objects cannot be nested in other page objects");
         });
 
