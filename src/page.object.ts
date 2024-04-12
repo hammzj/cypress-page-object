@@ -56,8 +56,7 @@ export default class PageObject extends ElementCollection {
     #customPathUrl(...pathInputs: string[]) {
         const matches = this.metadata.path.match(PageObject.#PATH_REPLACEMENT_REGEX);
         if (isNil(matches)) {
-            if (process.env.CYPRESS_PAGE_OBJECT_DEBUG)
-                console.error("No path variables exist found for URL path: " + this.metadata.path);
+            //console.error("No path variables exist found for URL path: " + this.metadata.path);
             return this.#urlObject().toString();
         }
         //Deep copy the original path
@@ -69,7 +68,7 @@ export default class PageObject extends ElementCollection {
             }
             replacedPath = replacedPath.replace(pathVar, sub);
         }
-        if (process.env.CYPRESS_PAGE_OBJECT_DEBUG) console.debug("replacedPath", replacedPath);
+        //console.debug("replacedPath", replacedPath);
         return this.#urlObject(replacedPath).toString();
     }
 
