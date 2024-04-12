@@ -60,6 +60,6 @@
     "no-console": "off",
     "no-case-declarations": "warn",
     "no-prototype-builtins": "off",
-    "no-extra-semi": "off",
+    "no-extra-semi": "off"
   }
 }
