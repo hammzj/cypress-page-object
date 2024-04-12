@@ -200,15 +200,15 @@ class SearchForm extends ComponentObject {
     }
 
     public elements = {
-        inputField: () => this.container().find("input[type=\"text\"]"),
-        submitButton: () => this.container().find("button[type=\"submit\"]"),
+        inputField: () => this.container().find(`input[type="text"]`),
+        submitButton: () => this.container().find(`button[type="submit"]`),
     };
 
     //An app action to search for text using the form
     search(text, submit = true) {
-        this.elements.inputField.type(text);
+        this.elements.inputField().type(text);
         if (submit === true) {
-            this.elements.submitButton.click();
+            this.elements.submitButton().click();
         }
     }
 }

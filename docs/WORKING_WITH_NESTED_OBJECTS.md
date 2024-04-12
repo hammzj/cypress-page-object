@@ -12,7 +12,7 @@ element selector existing inside of the parent object. Luckily, that's able to h
 
 A utility function exists in any `ElementCollection` instance named `performWithin`. This allows you to add a nested
 component object/element collection to exist inside of your parent component/page object. Nested Objects should always
-be written in **SentenceCase**.
+be written in **PascalCase**.
 
 `this.performWithin(baseElement, nestedComponent, fn)`
 
@@ -20,8 +20,8 @@ It accepts the following parameters:
 
 -   `baseElement`: an element selector existing on `this`
     -   Examples:
-        -   `this.container`
-        -   any static element selector
+        -   `this.container()`
+        -   any static element selector (`this.elements.yourElementSelector()`)
 -   `nestedComponent`: a new instance of the nested object class, containing any needed parameters in the constructor
     -   Examples:
         -   a new instance of an `ElementCollection` or `ComponentObject`
@@ -49,11 +49,11 @@ import AccountFormObject from "../components/account.form.object";
 
 class CreateAccountPage extends PageObject {
     contructor() {
-        super(`/create-account`);
+        super({ path: `/create-account` });
     }
 
     AccountFormObject(fn) {
-        this.performWithin(this.container, new AccountFormObject(), fn);
+        this.performWithin(this.container(), new AccountFormObject(), fn);
     }
 }
 ```
@@ -70,9 +70,9 @@ describe("Create Account Page", function () {
         cy.visit(createAccountPage.url());
 
         //This will submit the form with the given user details
-        createAccountPage.AccountFormObject(function (accountFormObject) {
-            accountFormObject.__fillInDetails(userDetails);
-            accountFormObject.submitButton.click();
+        createAccountPage.components.AccountFormObject(function (accountFormObject) {
+            accountFormObject.fillInDetails(userDetails);
+            accountFormObject.elements.submitButton().click();
         });
 
         cy.url().should("contain.text", "/success");
@@ -92,15 +92,16 @@ class ToggleButton extends ComponentObject {
 
 class SettingsObject extends ComponentObject {
     constructor() {
-        super(() => cy.get('div[id="settings"]'));
+        super(() => cy.get("div[id=\"settings\"]"));
     }
 
-    get displaySettingsForm() {
-        return this.container.find(`form#mode-selectors`);
-    }
+    public elements = {
+        displaySettingsForm: () => this.container().find(`form#mode-selectors`),
+
+    };
 
     ToggleButton(fn, buttonText) {
-        this.performWithin(this.displaySettingsForm, new ToggleButton(buttonText), fn);
+        this.performWithin(this.elements.displaySettingsForm(), new ToggleButton(buttonText), fn);
     }
 }
 ```
@@ -113,11 +114,11 @@ describe("test", function () {
         cy.mount(<Settings />);
 
         const settingsObject = new SettingsObject();
-        settingsObject.ToggleButton(function (toggleButton) {
-            toggleButton.click();
+        settingsObject.components.ToggleButton(function (toggleButton) {
+            toggleButton.container().click();
         }, "Dark Mode");
         settingsObject.ToggleButton(function (toggleButton) {
-            toggleButton.click();
+            toggleButton.container().click();
         }, "24 Hour Clock");
 
         //Assume that a message displays whether a button is turned on
@@ -143,12 +144,12 @@ import AccountFormObject from "../components/account.form.object";
 
 class CreateAccountPage extends PageObject {
     constructor() {
-        super(`/create-account`);
+        super({ path: `/create-account` });
     }
 
-    AccountFormObject(fn) {
-        this.container.within(() => fn(new AccountFormObject()));
-    }
+    public components = {
+        AccountFormObject: (fn) => this.container().within(() => fn(new AccountFormObject()))
+    };
 }
 ```
 
@@ -162,16 +163,16 @@ class ToggleButton extends ComponentObject {
 
 class SettingsObject extends ComponentObject {
     constructor() {
-        super(() => cy.get('div[id="settings"]'));
+        super(() => cy.get(`div[id="settings"]`));
     }
 
-    get displaySettingsForm() {
-        return this.container.find(`form#mode-selectors`);
-    }
+    public elements = {
+        displaySettingsForm: () => this.container.find(`form#mode-selectors`),
+    };
 
-    ToggleButton(fn, buttonText) {
-        this.displaySettingsForm.within(() => fn(new ToggleButton(buttonText)));
-    }
+    public components = {
+        ToggleButton: (fn) => this.elements.displaySettingsForm().within(() => fn(new ToggleButton(buttonText))),
+    };
 }
 ```
 
@@ -181,8 +182,8 @@ Then, you can use them in your test functions as you did before:
 const createAccountPage = new CreateAccountPage();
 //This will submit the form with the given user details
 createAccountPage.AccountFormObject((accountFormObject) => {
-    accountFormObject.__fillInDetails(userDetails);
-    accountFormObject.submitButton.click();
+    accountFormObject.fillInDetails(userDetails);
+    accountFormObject.elements.submitButton().click();
 });
 ```
 
@@ -191,9 +192,9 @@ createAccountPage.AccountFormObject((accountFormObject) => {
 ### Nested objects can also have their own nested objects
 
 ```js
-settingsPage.SettingsObject((settingsObject) => {
-    settingsPage.ToggleButton((toggleButton) => {
-        toggleButton.click();
+settingsPage.components.SettingsObject((settingsObject) => {
+    settingsPage.components.ToggleButton((toggleButton) => {
+        toggleButton.container().click();
     }, "Dark Mode");
 });
 ```
