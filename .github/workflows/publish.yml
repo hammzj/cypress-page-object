@@ -2,8 +2,23 @@ name: Publish Package to registries
 on:
   workflow_dispatch:
   release:
-    types: [published]
+    types: [ published ]
 jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@hammzj'
+      - run: yarn
+      - run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_JS_REGISTRY_AUTH_TOKEN }}
+
   publish-github:
     runs-on: ubuntu-latest
     steps:
