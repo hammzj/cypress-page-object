@@ -8,10 +8,10 @@ export default abstract class ElementCollection {
     protected _baseContainerFn: BaseContainerFunction;
     protected _scopedIndex?: number;
     protected metadata: Partial<IMetadata>;
-    public elements: Elements = {
+    protected elements: Elements = {
         container: () => this.container(),
     };
-    public components?: NestedComponents = {};
+    protected components?: NestedComponents = {};
 
     /**
      * @param baseContainerFn {function} The base container function returns the container of the element.

@@ -23,7 +23,7 @@ class InsufficientPathVariablesError extends Error {
  */
 export default class PageObject extends ElementCollection {
     static #PATH_REPLACEMENT_REGEX = /(?<pathVariable>:\w+)/g;
-    protected metadata: IPageMetadata;
+    public metadata: IPageMetadata;
 
     /**
      * @example new PageObject(); //Index page
