@@ -38,6 +38,7 @@
     "test:cypress:run:e2e": "cypress run --e2e  --browser electron"
   },
   "dependencies": {
+    "@types/node": "^20.12.7",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
