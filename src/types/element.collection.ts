@@ -5,7 +5,7 @@ export type ElementSelectorFunction = (...params: any) => Cypress.Chainable<Cypr
 export type BaseContainerFunction = ElementSelectorFunction;
 
 export type Elements = {
-    [key: string]: (...params: any) => ElementSelectorFunction;
+    [key: string]: ElementSelectorFunction;
 };
 
 export type ComponentObjectFunction = (instance: ElementCollection | any) => void;
