@@ -85,8 +85,8 @@ export default class PageObject extends ElementCollection {
         return pathInputs ? this.#customPathUrl(...pathInputs) : this.#urlObject().toString();
     }
 
-    visit(...pathInputs: string[]): void {
-        cy.visit(this.url(...pathInputs));
+    visit(pathInputs: string[], opts?: Partial<Cypress.VisitOptions>): void {
+        cy.visit(this.url(...pathInputs), opts);
     }
 
     assertIsOnPage(...pathInputs: string[]): void {
