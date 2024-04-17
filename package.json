@@ -1,6 +1,6 @@
 {
   "name": "@hammzj/cypress-page-object",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A set of template classes and guides to help with developing component and page objects in Cypress.",
   "author": "Zachary Hamm <zjhamm304+github@gmail.com>",
   "license": "MIT",
@@ -19,10 +19,10 @@
     "test",
     "test automation"
   ],
-  "main": "index.ts",
+  "main": "build/dist/index.js",
+  "types": "build/dist/index.d.ts",
   "files": [
-    "src/",
-    "index.ts",
+    "build/",
     "LICENSE",
     "README.md"
   ],
