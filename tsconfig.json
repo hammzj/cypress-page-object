@@ -17,17 +17,18 @@
     "jsx": "react",
     "strict": false,
     "rootDir": ".",
-    "outDir": "build/dist",
+    "outDir": "build/",
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "index.ts"
   ],
-
   "types": [
     "typePatches"
   ]
