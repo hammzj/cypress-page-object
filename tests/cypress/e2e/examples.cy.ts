@@ -10,6 +10,8 @@ describe("Element collections", function () {
     context("Getters", function () {
         specify("element selectors in `this.elements`", function () {
             class ExamplePageObject extends PageObject {
+                public elements;
+
                 constructor() {
                     super();
                     //Just trying another way of doing this,
@@ -101,6 +103,8 @@ describe("Element collections", function () {
     describe("Component objects", function () {
         specify("component objects are located using a base container function", function () {
             class ProPricingCardObject extends ComponentObject {
+                public elements;
+
                 constructor() {
                     super(() => cy.contains(".MuiCard-root", "Pro"));
                 }
