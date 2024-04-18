@@ -22,13 +22,12 @@
     "noImplicitThis": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "allowSyntheticDefaultImports": true
   },
   "include": [
-    "src/**/*",
-    "index.ts"
+    "src/**/*"
   ],
+
   "types": [
     "typePatches"
   ]
