@@ -1,5 +1,4 @@
 import { BaseContainerFunction, ComponentObjectFunction, Elements, NestedComponents, IMetadata } from "./types";
-import { isNil } from "lodash";
 
 /**
  * Base class for describing page objects and components, which have a collection of element selectors
@@ -8,9 +7,7 @@ export default abstract class ElementCollection {
     protected _baseContainerFn: BaseContainerFunction;
     protected _scopedIndex?: number;
     protected metadata: Partial<IMetadata>;
-    protected elements: Elements = {
-        container: () => this.container(),
-    };
+    protected elements: Elements;
     protected components?: NestedComponents = {};
 
     /**
@@ -22,6 +19,9 @@ export default abstract class ElementCollection {
     constructor(baseContainerFn: BaseContainerFunction = () => cy.root()) {
         this._baseContainerFn = baseContainerFn;
         this.metadata = {};
+        this.elements = {
+            container: () => this.container(),
+        };
     }
 
     /**
@@ -59,6 +59,28 @@ export default abstract class ElementCollection {
      */
     set index(i: number) {
         this.scopedIndex = i;
+    }
+
+    /**
+     * Adds new element selectors to the base group of existing elements
+     * WARNING: you will set `elements` as public in order to access them outside of app action functions!
+     * Just add `public elements: Elements` before your constructor.
+     * @param elements
+     * @private
+     */
+    protected set addElements(elements: Elements) {
+        this.elements = Object.assign(this.elements || {}, elements);
+    }
+
+    /**
+     * Adds new element selectors to the base group of existing elements
+     * WARNING: you will set `components` as public in order to access them outside of app action functions!
+     * Just add `public components: NestedComponentd` before your constructor.
+     * @param components
+     * @private
+     */
+    protected set addNestedComponents(components: NestedComponents) {
+        this.components = Object.assign(this.components || {}, components);
     }
 
     /**
@@ -104,7 +126,7 @@ export default abstract class ElementCollection {
      * when expecting multiple elements to be located.
      */
     container(): Cypress.Chainable<Cypress.JQueryWithSelector> {
-        return !isNil(this._scopedIndex) ?
+        return this._scopedIndex != null ?
                 this.getAllContainers().eq(this._scopedIndex)
             :   this.getAllContainers().first();
     }
@@ -158,6 +180,7 @@ export default abstract class ElementCollection {
      *   this.elements.form().within(() => fn(new RadioButtonObject(buttonText)));
      * }
      */
+    //@ts-ignore
     performWithin(
         baseElement: Cypress.Chainable<Cypress.JQueryWithSelector>,
         nestedComponent: ElementCollection,

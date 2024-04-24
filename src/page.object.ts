@@ -1,4 +1,3 @@
-import { isNil } from "lodash";
 import { IPageMetadata } from "./types";
 import ElementCollection from "./element.collection";
 
@@ -55,7 +54,7 @@ export default class PageObject extends ElementCollection {
      */
     #customPathUrl(...pathInputs: string[]) {
         const matches = this.metadata.path.match(PageObject.#PATH_REPLACEMENT_REGEX);
-        if (isNil(matches)) {
+        if (matches == null) {
             //console.error("No path variables exist found for URL path: " + this.metadata.path);
             return this.#urlObject().toString();
         }
@@ -63,7 +62,7 @@ export default class PageObject extends ElementCollection {
         let replacedPath = this.metadata.path.repeat(1);
         for (const pathVar of matches) {
             const sub = pathInputs.shift();
-            if (isNil(sub)) {
+            if (sub == null) {
                 throw new InsufficientPathVariablesError();
             }
             replacedPath = replacedPath.replace(pathVar, sub);
@@ -93,6 +92,7 @@ export default class PageObject extends ElementCollection {
         cy.url().should("eq", this.url(...pathInputs));
     }
 
+    //@ts-ignore
     performWithin(baseElement, nestedComponent, fn) {
         if (PageObject.prototype.isPrototypeOf(nestedComponent)) {
             throw new UnexpectedNestedPageObjectError();
