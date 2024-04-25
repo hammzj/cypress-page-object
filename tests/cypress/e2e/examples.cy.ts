@@ -1,4 +1,4 @@
-import { PageObject, ComponentObject } from "../../../index";
+import { PageObject, ComponentObject, IPageMetadata } from "../../../index";
 import { ComponentObjectFunction, Elements, NestedComponents } from "../../../src";
 
 describe("Element collections", function () {
@@ -51,7 +51,7 @@ describe("Element collections", function () {
 
         specify("dynamic element selectors can be parameterized", function () {
             class ExamplePageObject extends PageObject {
-                public elements;
+                public elements: Elements;
 
                 constructor() {
                     super();
@@ -630,8 +630,8 @@ describe("Element collections", function () {
 
     describe("Page objects", function () {
         class AppBar extends ComponentObject {
-            public elements;
-            public components;
+            public elements: Elements;
+            public components: NestedComponents;
 
             constructor() {
                 super(() => cy.get(".MuiAppBar-root"));
@@ -852,7 +852,7 @@ describe("Element collections", function () {
 
             specify(`path variables can be set using path inputs`, function () {
                 class ExamplePageObject extends PageObject {
-                    constructor(metadata) {
+                    constructor(metadata: IPageMetadata) {
                         super(metadata);
                     }
                 }
