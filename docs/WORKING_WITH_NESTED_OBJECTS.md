@@ -41,6 +41,19 @@ function fn(nestedComponent) {
 };
 ```
 
+### Adding nested components
+
+These are defined in `this.components`. Add new component objects in the constructor by calling the "set"
+method, `this.addNestedComponents` or its alias of `this.addComponents`. This allows classes to inherit other elements from their base class when extending them.
+
+You can also extend the original elements
+with `this.components = { ...this.components, ... }` or use `Object.assign(this.components, { ... })` inside the class
+constructor,
+but this might produce warnings with using `this.components` before initialization.
+
+_Note: `this.components` defaults to being a protected method so they are only used in app action functions!
+If you want to access elements outside of app action, add `public components: NestedComponents` to your class._
+
 ### Example 1: A simple nested component object
 
 ```js
@@ -50,10 +63,11 @@ import AccountFormObject from "../components/account.form.object";
 class CreateAccountPage extends PageObject {
     contructor() {
         super({ path: `/create-account` });
-    }
-
-    AccountFormObject(fn) {
-        this.performWithin(this.container(), new AccountFormObject(), fn);
+        this.addNestedComponents = {
+            AccountFormObject(fn) {
+                this.performWithin(this.container(), new AccountFormObject(), fn);
+            },
+        };
     }
 }
 ```
@@ -91,17 +105,19 @@ class ToggleButton extends ComponentObject {
 }
 
 class SettingsObject extends ComponentObject {
+    public elements: Elements;
+    public components: NestedComponents;
+
     constructor() {
-        super(() => cy.get("div[id=\"settings\"]"));
-    }
-
-    public elements = {
-        displaySettingsForm: () => this.container().find(`form#mode-selectors`),
-
-    };
-
-    ToggleButton(fn, buttonText) {
-        this.performWithin(this.elements.displaySettingsForm(), new ToggleButton(buttonText), fn);
+        super(() => cy.get(`div[id="settings"]`));
+        this.addElements = {
+            displaySettingsForm: () => this.container().find(`form#mode-selectors`),
+        };
+        this.addNestedComponents = {
+            ToggleButton(fn, buttonText) {
+                this.performWithin(this.elements.displaySettingsForm(), new ToggleButton(buttonText), fn);
+            },
+        };
     }
 }
 ```
@@ -145,11 +161,10 @@ import AccountFormObject from "../components/account.form.object";
 class CreateAccountPage extends PageObject {
     constructor() {
         super({ path: `/create-account` });
+        this.addNestedComponents = {
+            AccountFormObject: (fn) => this.container().within(() => fn(new AccountFormObject())),
+        };
     }
-
-    public components = {
-        AccountFormObject: (fn) => this.container().within(() => fn(new AccountFormObject()))
-    };
 }
 ```
 
@@ -164,15 +179,13 @@ class ToggleButton extends ComponentObject {
 class SettingsObject extends ComponentObject {
     constructor() {
         super(() => cy.get(`div[id="settings"]`));
+        this.addElements = {
+            displaySettingsForm: () => this.container.find(`form#mode-selectors`),
+        };
+        this.addNestedComponents = {
+            ToggleButton: (fn) => this.elements.displaySettingsForm().within(() => fn(new ToggleButton(buttonText))),
+        };
     }
-
-    public elements = {
-        displaySettingsForm: () => this.container.find(`form#mode-selectors`),
-    };
-
-    public components = {
-        ToggleButton: (fn) => this.elements.displaySettingsForm().within(() => fn(new ToggleButton(buttonText))),
-    };
 }
 ```
 
