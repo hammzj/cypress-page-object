@@ -10,31 +10,30 @@ import {
 } from "@hammzj/cypress-page-object";
 
 class FooterObject extends ComponentObject {
+    public elements: Elements;
+
     constructor() {
         super(() => cy.get(`footer`));
+        this.addElements = {
+            copyright: () => this.container().find(`p.MuiTypography-root`),
+        };
     }
-
-    elements = {
-        ...this.elements,
-        copyright: () => this.container().find(`p.MuiTypography-root`),
-    };
 }
 
 class ExamplePageObject extends PageObject {
+    public elements: Elements;
+    public components: NestedComponents;
+
     constructor() {
         super();
+        this.addElements = {
+            appBar: () => cy.get(`.MuiAppBar-root`),
+            appLink: (label: title) => this.elements.appBar().contains("a.MuiLink-root", label),
+        };
+        this.addNestedComponents = {
+            FooterObject: (fn) => this.performWithin(this.container(), new FooterObject(), fn),
+        }
     }
-
-    elements = {
-        ...this.elements,
-        appBar: () => cy.get(`.MuiAppBar-root`),
-        appLink: (label: title) => this.elements.appBar().contains("a.MuiLink-root", label),
-    };
-
-    components = {
-        FooterObject: (fn) => this.performWithin(this.container(), new FooterObject(), fn),
-    };
-
 }
 
 const examplePageObject = new ExamplePageObject();
@@ -47,7 +46,7 @@ examplePageObject.components.FooterObject((footerObject) => {
 
 ## Installation
 
-This package is hosted on both the NPMJS registry and the GitHub NPM package repository.
+This package is hosted on both the npmjs registry and the GitHub npm package repository.
 
 If installing from GitHub, please add or update
 your `.npmrc` file with the following:
@@ -103,9 +102,16 @@ class SearchForm extends ElementCollection {
 Base elements are locators for HTML elements on the webpage. They should exist as chained from the base container, or
 another element selector in the collection.
 
-These are defined in `this.elements`. You can either extend the original elements
-with `this.elements = { ...this.elements, ... }`
-or use `Object.assign(this.elements, { ... })` inside the class constructor.
+These are defined in `this.elements`. Add new element selectors in the constructor by calling the "set"
+method, `this.addElements`. This allows classes to inherit other elements from their base class when extending them.
+
+You can also extend the original elements
+with `this.elements = { ...this.elements, ... }` or use `Object.assign(this.elements, { ... })` inside the class
+constructor,
+but this might produce warnings with using `this.elements` before initialization.
+
+_Note: `this.elements` defaults to being a protected method so that elements are only used in app action functions!
+If you want to access elements outside of app action, add `public elements: Elements` to your class._
 
 <details>
 <summary>Setting elements</summary>
@@ -115,19 +121,19 @@ class NewUserForm extends ElementCollection {
     constructor() {
         //This is the base container function for the address form
         super(() => cy.get("form#new-user"));
-    }
+        this.addElements = {
+            //An element selector chained from another element selector -- selects the first found "input"
+            usernameField: () => this.container().find(`input`).first(),
+            passwordField: () => this.elements.usernameField().next(),
+            //Some selectors can return many elements at once!
+            fieldErrors: () => {
+                //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
+                //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
+                //@see https://docs.cypress.io/api/commands/eq
 
-    public elements = {
-        //An element selector chained from another element selector -- selects the first found "input"
-        usernameField: () => this.container().find(`input`).first(),
-        passwordField: () => this.elements.usernameField().next(),
-        //Some selectors can return many elements at once!
-        fieldErrors: () => {  //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
-            //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
-            //@see https://docs.cypress.io/api/commands/eq
-
-            return this.container().find(`div.error`);
-        }
+                return this.container().find(`div.error`);
+            },
+        };
     }
 }
 ```
@@ -135,7 +141,37 @@ class NewUserForm extends ElementCollection {
 </details>
 
 <details>
-<summary>Alternate way of setting elements</summary>
+<summary>Alternate ways of setting elements</summary>
+
+These might produce warnings!
+
+Using spread syntax
+
+```js
+class NewUserForm extends ElementCollection {
+    constructor() {
+        //This is the base container function for the address form
+        super(() => cy.get("form#new-user"));
+    }
+
+    public elements = {
+        ...this.elements,
+        //An element selector chained from another element selector -- selects the first found "input"
+        usernameField: () => this.container().find(`input`).first(),
+        passwordField: () => this.elements.usernameField().next(),
+        //Some selectors can return many elements at once!
+        fieldErrors: () => {
+            //Assumes that multiple field errors can be present on submission, so it has the possiblity to return many elements!
+            //For example, you can use this.fieldErrors.eq(i) to find a single instance of the error.
+            //@see https://docs.cypress.io/api/commands/eq
+
+            return this.container().find(`div.error`);
+        },
+    };
+}
+```
+
+Using `Object.assign()`
 
 ```js
 class NewUserForm extends ElementCollection {
@@ -171,12 +207,11 @@ For example, finding a radio button in a list of selections:
 class SelectAnShippingOptionObject extends ElementCollection {
     constructor() {
         super(() => cy.get(`form#select-a-shipping-partner`));
+        this.addElements = {
+            //Finds the radio button based on its text
+            radioButton: (text) => this.container().contains(`button[type="radio"]`, text),
+        };
     }
-
-    public elements = {
-        //Finds the radio button based on its text
-        radioButton: (text) => this.container().contains(`button[type="radio"]`, text),
-    };
 }
 ```
 
@@ -198,12 +233,11 @@ const { ComponentObject } = require("@hammzj/cypress-page-object");
 class SearchForm extends ComponentObject {
     constructor() {
         super(() => cy.get(`form#location-search-form`));
+        this.addElements = {
+            inputField: () => this.container().find(`input[type="text"]`),
+            submitButton: () => this.container().find(`button[type="submit"]`),
+        };
     }
-
-    public elements = {
-        inputField: () => this.container().find(`input[type="text"]`),
-        submitButton: () => this.container().find(`button[type="submit"]`),
-    };
 
     //An app action to search for text using the form
     search(text, submit = true) {
