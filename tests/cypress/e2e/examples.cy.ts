@@ -252,6 +252,69 @@ describe("Element collections", function () {
             });
 
             specify(
+                "nested component objects can be added using this.addNestedComponents or this.addComponents",
+                function () {
+                    class PricingHeaderObject extends ComponentObject {
+                        public elements: Elements;
+
+                        constructor() {
+                            super(() => cy.get(".MuiCardHeader-root"));
+                            this.addElements = {
+                                title: () => this.container().find(".MuiCardHeader-title"),
+                                subtitle: () => this.container().find(".MuiCardHeader-subheader"),
+                                starIcon: () => this.container().find(`svg[data-testid="StarBorderIcon"]`),
+                            };
+                        }
+                    }
+
+                    class PricingCardObject1 extends ComponentObject {
+                        public elements: Elements;
+                        public components: NestedComponents;
+
+                        constructor(title: string) {
+                            super(() => cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root"));
+                            this.addElements = {
+                                contentContainer: () => this.container().find(".MuiCardContent-root"),
+                                pricing: () => this.elements.contentContainer().find(".MuiBox-root"),
+                                listItem: (label: string) =>
+                                    this.elements.contentContainer().contains("ul > li", label),
+                                submitButton: () => this.container().find("button"),
+                            };
+                            this.addNestedComponents = {
+                                PricingHeaderObject: (fn: ComponentObjectFunction) =>
+                                    this.container().within(() => fn(new PricingHeaderObject())),
+                            };
+                        }
+                    }
+
+                    class PricingCardObject2 extends ComponentObject {
+                        public elements: Elements;
+                        public components: NestedComponents;
+
+                        constructor(title: string) {
+                            super(() => cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root"));
+                            this.addElements = {
+                                contentContainer: () => this.container().find(".MuiCardContent-root"),
+                                pricing: () => this.elements.contentContainer().find(".MuiBox-root"),
+                                listItem: (label: string) =>
+                                    this.elements.contentContainer().contains("ul > li", label),
+                                submitButton: () => this.container().find("button"),
+                            };
+                            this.addComponents = {
+                                PricingHeaderObject: (fn: ComponentObjectFunction) =>
+                                    this.container().within(() => fn(new PricingHeaderObject())),
+                            };
+                        }
+                    }
+
+                    const pco1 = new PricingCardObject1("Free");
+                    const pco2 = new PricingCardObject2("Free");
+                    expect(pco1.components.PricingHeaderObject).to.exist;
+                    expect(pco2.components.PricingHeaderObject).to.exist;
+                }
+            );
+
+            specify(
                 "[ALTERNATIVE]: component objects can nested other component objects using cy.within()",
                 function () {
                     class PricingHeaderObject extends ComponentObject {

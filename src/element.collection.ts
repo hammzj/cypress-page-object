@@ -66,7 +66,7 @@ export default abstract class ElementCollection {
      * WARNING: you will set `elements` as public in order to access them outside of app action functions!
      * Just add `public elements: Elements` before your constructor.
      * @param elements
-     * @private
+     * @protected
      */
     protected set addElements(elements: Elements) {
         this.elements = Object.assign(this.elements || {}, elements);
@@ -77,10 +77,18 @@ export default abstract class ElementCollection {
      * WARNING: you will set `components` as public in order to access them outside of app action functions!
      * Just add `public components: NestedComponentd` before your constructor.
      * @param components
-     * @private
+     * @protected
      */
     protected set addNestedComponents(components: NestedComponents) {
         this.components = Object.assign(this.components || {}, components);
+    }
+
+    /**
+     *  @alias addNestedComponents
+     *  @protected
+     */
+    protected set addComponents(components: NestedComponents) {
+        this.addNestedComponents = components;
     }
 
     /**

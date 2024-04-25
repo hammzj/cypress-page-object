@@ -44,7 +44,7 @@ function fn(nestedComponent) {
 ### Adding nested components
 
 These are defined in `this.components`. Add new component objects in the constructor by calling the "set"
-method, `this.addNestedComponents`. This allows classes to inherit other elements from their base class when extending them.
+method, `this.addNestedComponents` or its alias of `this.addComponents`. This allows classes to inherit other elements from their base class when extending them.
 
 You can also extend the original elements
 with `this.components = { ...this.components, ... }` or use `Object.assign(this.components, { ... })` inside the class
