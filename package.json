@@ -37,14 +37,11 @@
     "test:cypress:open:e2e": "cypress open --e2e --browser electron",
     "test:cypress:run:e2e": "cypress run --e2e  --browser electron"
   },
-  "dependencies": {
-    "@types/node": "^20.12.7",
-    "lodash": "^4.17.21"
-  },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-transform-private-property-in-object": "^7.23.3",
     "@types/lodash": "^4.17.0",
+    "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
     "cypress": "latest",

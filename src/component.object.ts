@@ -23,7 +23,7 @@ export default class ComponentObject extends ElementCollection {
     assertExists(expectation: boolean = true): void {
         if (!expectation) {
             //@ts-ignore
-            if (this._scopedIndex < 0) {
+            if (this._scopedIndex > 0) {
                 /*
                 The scoped index is set above 0 (i.e., it is not the first-found instance).
                 Make sure at least a base container exists first,
