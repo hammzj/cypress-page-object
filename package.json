@@ -19,15 +19,15 @@
     "test",
     "test automation"
   ],
-  "main": "index.ts",
+  "main": "build/dist/src/index.js",
+  "types": "build/dist/src/index.d.ts",
   "files": [
-    "src/",
-    "index.ts",
+    "build/dist/src",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "dev:tsc": "tsc",
+    "dev:build": "tsc",
     "dev:lint": "eslint . --ext .js,.ts",
     "dev:prettier": "prettier --write \"**/*.{ts,tsx,js,jsx}\" \"docs/**/*.md\" \"*.md\"",
     "dev:postinstall": "husky install",

@@ -21,7 +21,7 @@ class InsufficientPathVariablesError extends Error {
  * object, or both.
  */
 export default class PageObject extends ElementCollection {
-    static readonly #PATH_REPLACEMENT_REGEX = /(?<pathVariable>:\w+)/g;
+    private static readonly PATH_REPLACEMENT_REGEX = /(?<pathVariable>:\w+)/g;
     protected metadata: IPageMetadata;
 
     /**
@@ -45,18 +45,18 @@ export default class PageObject extends ElementCollection {
      * @example <summary>Replacing path variables with inputs</summary>
      * //baseUrl = "http://localhost:3000"
      * //this.metadata.path = "/user/:userId/post/:postId"
-     * this.#customPathUrl("1234", "post-9876") => "http://localhost:3000/user/1234/post/post-9876"
+     * this.customPathUrl("1234", "post-9876") => "http://localhost:3000/user/1234/post/post-9876"
      * @example <summary>A path without path variables/summary>
      * //baseUrl = "http://localhost:3000"
      * //this.metadata.path = "/settings/privacy"
-     * this.#customPathUrl("1234") => "http://localhost:3000/settings/privacy" //Works, but will log an error to the console
+     * this.customPathUrl("1234") => "http://localhost:3000/settings/privacy" //Works, but will log an error to the console
      * @private
      */
-    #customPathUrl(...pathInputs: string[]) {
-        const matches = this.metadata.path.match(PageObject.#PATH_REPLACEMENT_REGEX);
+    customPathUrl(...pathInputs: string[]) {
+        const matches = this.metadata.path.match(PageObject.PATH_REPLACEMENT_REGEX);
         if (matches == null) {
             //console.error("No path variables exist found for URL path: " + this.metadata.path);
-            return this.#urlObject().toString();
+            return this.urlObject().toString();
         }
         //Deep copy the original path
         let replacedPath = this.metadata.path.repeat(1);
@@ -68,10 +68,10 @@ export default class PageObject extends ElementCollection {
             replacedPath = replacedPath.replace(pathVar, sub);
         }
         //console.debug("replacedPath", replacedPath);
-        return this.#urlObject(replacedPath).toString();
+        return this.urlObject(replacedPath).toString();
     }
 
-    #urlObject(path = this.metadata.path) {
+    private urlObject(path = this.metadata.path) {
         return new URL(path, this.metadata.baseUrl);
     }
 
@@ -81,7 +81,7 @@ export default class PageObject extends ElementCollection {
      * @return pageURL {string}
      */
     url(...pathInputs: string[]): string {
-        return pathInputs ? this.#customPathUrl(...pathInputs) : this.#urlObject().toString();
+        return pathInputs ? this.customPathUrl(...pathInputs) : this.urlObject().toString();
     }
 
     visit(pathInputs: string[], opts?: Partial<Cypress.VisitOptions>): void {
