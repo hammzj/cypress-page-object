@@ -1,6 +1,6 @@
 {
   "name": "@hammzj/cypress-page-object",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "A set of template classes and guides to help with developing component and page objects in Cypress.",
   "author": "Zachary Hamm <zjhamm304+github@gmail.com>",
   "license": "MIT",
