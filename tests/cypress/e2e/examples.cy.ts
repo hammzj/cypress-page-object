@@ -1,5 +1,12 @@
-import { PageObject, ComponentObject, IPageMetadata } from "../../../index";
-import { ComponentObjectFunction, Elements, NestedComponents } from "../../../src";
+import {
+    ElementCollection,
+    ComponentObject,
+    PageObject,
+    IPageMetadata,
+    ComponentObjectFunction,
+    Elements,
+    NestedComponents,
+} from "../../../src";
 
 describe("Element collections", function () {
     beforeEach(function () {
@@ -102,6 +109,10 @@ describe("Element collections", function () {
     });
 
     describe("Component objects", function () {
+        it("is an instance of an ElementCollection", function () {
+            expect(PageObject.prototype instanceof ElementCollection).to.eq(true);
+        });
+
         specify("component objects are located using a base container function", function () {
             class ProPricingCardObject extends ComponentObject {
                 public elements: Elements;
@@ -743,6 +754,10 @@ describe("Element collections", function () {
         }
 
         const examplePageObject = new ExamplePageObject();
+
+        it("is an instance of an ElementCollection", function () {
+            expect(PageObject.prototype instanceof ElementCollection).to.eq(true);
+        });
 
         specify("Page objects can have elements", function () {
             examplePageObject.elements.contentTitle().should("have.text", "Pricing");

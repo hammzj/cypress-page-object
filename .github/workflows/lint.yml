@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: |
           yarn install
-          yarn run dev:tsc
+          yarn run dev:build
 
   lint:
     name: Run eslint

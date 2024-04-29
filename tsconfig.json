@@ -1,19 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es6",
-    "lib": [
-      "es6",
-      "dom"
-    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": false,
+    "target": "ES2016",
+    "allowJs": false,
     "declaration": true,
-    "types": [
-      "cypress",
-      "node"
-    ],
+    "declarationMap": true,
     "sourceMap": false,
-    "allowJs": true,
     "jsx": "react",
     "strict": false,
     "rootDir": ".",
@@ -22,12 +16,20 @@
     "noImplicitThis": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": false,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "types": [
+      "cypress",
+      "node"
+    ]
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "tests/**/*"
   ],
-
   "types": [
     "typePatches"
   ]
