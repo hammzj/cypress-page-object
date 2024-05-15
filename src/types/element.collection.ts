@@ -1,12 +1,11 @@
 import ElementCollection from "../element.collection";
 
-export type ElementSelectorFunction<Element extends Node = HTMLElement> = (
-    ...params: any
-) => Cypress.Chainable<JQuery<Element>>;
-export type BaseContainerFunction<Element extends Node = HTMLElement> = ElementSelectorFunction<Element>;
+export type ElementSelectorFunction = (...params: any) => Cypress.Chainable<Cypress.JQueryWithSelector>;
+
+export type BaseContainerFunction = ElementSelectorFunction;
 
 export type Elements = {
-    [key: string]: ElementSelectorFunction<any>;
+    [key: string]: ElementSelectorFunction;
 };
 
 export type ComponentObjectFunction = (instance: ElementCollection | any) => void;
