@@ -1,4 +1,5 @@
 import { BaseContainerFunction, ComponentObjectFunction, Elements, NestedComponents, IMetadata } from "./types";
+import ComponentObject from "./component.object";
 
 /**
  * Base class for describing page objects and components, which have a collection of element selectors
@@ -184,15 +185,13 @@ export default abstract class ElementCollection {
      *
      * @example <summary>Nesting an element without using this function</summary>
      * //RadioSelectionFormObject
-     * RadioButtonObject(fn, buttonText) {
-     *   this.elements.form().within(() => fn(new RadioButtonObject(buttonText)));
-     * }
+     * RadioButtonObject: (fn, buttonText) => this.elements.form().within(() => fn(new RadioButtonObject(buttonText)));
+     *
      */
-    //@ts-ignore
-    performWithin(
+    performWithin<TComponentObject extends ComponentObject>(
         baseElement: Cypress.Chainable<Cypress.JQueryWithSelector>,
-        nestedComponent: ElementCollection,
-        fn: ComponentObjectFunction
+        nestedComponent: TComponentObject,
+        fn: ComponentObjectFunction<TComponentObject>
     ): void {
         baseElement.within(() => fn(nestedComponent));
     }

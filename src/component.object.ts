@@ -1,4 +1,4 @@
-import { BaseContainerFunction } from "./types";
+import { BaseContainerFunction, Elements, NestedComponents } from "./types";
 import ElementCollection from "./element.collection";
 
 /**
@@ -7,7 +7,10 @@ import ElementCollection from "./element.collection";
  * other nested component objects themselves. It must provide a base container function.
  */
 export default class ComponentObject extends ElementCollection {
-    constructor(baseContainerFn: BaseContainerFunction) {
+    protected declare elements: Elements;
+    protected declare components: NestedComponents;
+
+    constructor(baseContainerFn?: BaseContainerFunction) {
         super(baseContainerFn);
     }
 
