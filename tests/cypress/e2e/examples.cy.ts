@@ -17,7 +17,7 @@ describe("Element collections", function () {
     context("Getters", function () {
         specify("element selectors in `this.elements`", function () {
             class ExamplePageObject extends PageObject {
-                public elements: Elements;
+                public declare elements: Elements;
 
                 constructor() {
                     super();
@@ -38,7 +38,7 @@ describe("Element collections", function () {
 
         specify("finding elements from a parent element selector", function () {
             class ExamplePageObject extends PageObject {
-                public elements: Elements;
+                public declare elements: Elements;
 
                 constructor() {
                     super();
@@ -58,7 +58,7 @@ describe("Element collections", function () {
 
         specify("dynamic element selectors can be parameterized", function () {
             class ExamplePageObject extends PageObject {
-                public elements: Elements;
+                public declare elements: Elements;
 
                 constructor() {
                     super();
@@ -82,7 +82,7 @@ describe("Element collections", function () {
 
         specify("[ALTERNATIVE]: filtering getters instead of using dynamic element selectors", function () {
             class ExamplePageObject extends PageObject {
-                public elements: Elements;
+                public declare elements: Elements;
 
                 constructor() {
                     super();
@@ -115,7 +115,7 @@ describe("Element collections", function () {
 
         specify("component objects are located using a base container function", function () {
             class ProPricingCardObject extends ComponentObject {
-                public elements: Elements;
+                public declare elements: Elements;
 
                 constructor() {
                     super(() => cy.contains(".MuiCard-root", "Pro"));
@@ -185,7 +185,7 @@ describe("Element collections", function () {
             specify("[ALTERNATE]: base container functions can be updated after creation", function () {
                 //This is useful when properties should be set on an object and saved.
                 class PricingCardObject extends ComponentObject {
-                    public elements: Elements;
+                    public declare elements: Elements;
 
                     constructor(title: string) {
                         super();
@@ -211,7 +211,7 @@ describe("Element collections", function () {
 
             specify("component objects can nested other component objects using performWithin", function () {
                 class PricingHeaderObject extends ComponentObject {
-                    public elements: Elements;
+                    public declare elements: Elements;
 
                     constructor() {
                         super(() => cy.get(".MuiCardHeader-root"));
@@ -224,8 +224,8 @@ describe("Element collections", function () {
                 }
 
                 class PricingCardObject extends ComponentObject {
-                    public elements: Elements;
-                    public components: NestedComponents;
+                    public declare elements: Elements;
+                    public declare components: NestedComponents;
 
                     constructor(title: string) {
                         super(() => {
@@ -238,7 +238,7 @@ describe("Element collections", function () {
                             submitButton: () => this.container().find("button"),
                         };
                         this.addNestedComponents = {
-                            PricingHeaderObject: (fn: ComponentObjectFunction) =>
+                            PricingHeaderObject: (fn) =>
                                 this.performWithin(this.container(), new PricingHeaderObject(), fn),
                         };
                     }
@@ -266,7 +266,7 @@ describe("Element collections", function () {
                 "nested component objects can be added using this.addNestedComponents or this.addComponents",
                 function () {
                     class PricingHeaderObject extends ComponentObject {
-                        public elements: Elements;
+                        public declare elements: Elements;
 
                         constructor() {
                             super(() => cy.get(".MuiCardHeader-root"));
@@ -279,8 +279,8 @@ describe("Element collections", function () {
                     }
 
                     class PricingCardObject1 extends ComponentObject {
-                        public elements: Elements;
-                        public components: NestedComponents;
+                        public declare elements: Elements;
+                        public declare components: NestedComponents;
 
                         constructor(title: string) {
                             super(() => cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root"));
@@ -292,15 +292,15 @@ describe("Element collections", function () {
                                 submitButton: () => this.container().find("button"),
                             };
                             this.addNestedComponents = {
-                                PricingHeaderObject: (fn: ComponentObjectFunction) =>
+                                PricingHeaderObject: (fn: ComponentObjectFunction<PricingHeaderObject>) =>
                                     this.container().within(() => fn(new PricingHeaderObject())),
                             };
                         }
                     }
 
                     class PricingCardObject2 extends ComponentObject {
-                        public elements: Elements;
-                        public components: NestedComponents;
+                        public declare elements: Elements;
+                        public declare components: NestedComponents;
 
                         constructor(title: string) {
                             super(() => cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root"));
@@ -312,7 +312,7 @@ describe("Element collections", function () {
                                 submitButton: () => this.container().find("button"),
                             };
                             this.addComponents = {
-                                PricingHeaderObject: (fn: ComponentObjectFunction) =>
+                                PricingHeaderObject: (fn) =>
                                     this.container().within(() => fn(new PricingHeaderObject())),
                             };
                         }
@@ -329,7 +329,7 @@ describe("Element collections", function () {
                 "[ALTERNATIVE]: component objects can nested other component objects using cy.within()",
                 function () {
                     class PricingHeaderObject extends ComponentObject {
-                        public elements: Elements;
+                        public declare elements: Elements;
 
                         constructor() {
                             super(() => cy.get(".MuiCardHeader-root"));
@@ -342,8 +342,8 @@ describe("Element collections", function () {
                     }
 
                     class PricingCardObject extends ComponentObject {
-                        public elements: Elements;
-                        public components: NestedComponents;
+                        public declare elements: Elements;
+                        public declare components: NestedComponents;
 
                         constructor(title: string) {
                             super(() => cy.contains(".MuiCardHeader-content", title).parents(".MuiCard-root"));
@@ -356,7 +356,7 @@ describe("Element collections", function () {
                             };
 
                             this.addNestedComponents = {
-                                PricingHeaderObject: (fn: ComponentObjectFunction) =>
+                                PricingHeaderObject: (fn) =>
                                     this.container().within(() => fn(new PricingHeaderObject())),
                             };
                         }
@@ -377,7 +377,7 @@ describe("Element collections", function () {
 
             specify("nested component objects can be parameterized", function () {
                 class LinkListObject extends ComponentObject {
-                    public elements: Elements;
+                    public declare elements: Elements;
 
                     constructor(title: string) {
                         super(() => cy.contains(".MuiTypography-h6", title).parent(".MuiGrid-item"));
@@ -388,8 +388,8 @@ describe("Element collections", function () {
                 }
 
                 class FooterObject extends ComponentObject {
-                    public elements: Elements;
-                    public components: NestedComponents;
+                    public declare elements: Elements;
+                    public declare components: NestedComponents;
 
                     constructor() {
                         super(() => cy.get(`footer`));
@@ -398,7 +398,7 @@ describe("Element collections", function () {
                             copyright: () => this.container().find(`p.MuiTypography-root`),
                         };
                         this.addNestedComponents = {
-                            LinkListObject: (fn: ComponentObjectFunction, title: string) => {
+                            LinkListObject: (fn: ComponentObjectFunction<LinkListObject>, title: string) => {
                                 return this.performWithin(this.elements.gridLayout(), new LinkListObject(title), fn);
                             },
                         };
@@ -425,8 +425,8 @@ describe("Element collections", function () {
 
         specify("different indices can change with which nested component is currently being interacted", function () {
             class LinkListObject extends ComponentObject {
-                public elements: Elements;
-                public components: NestedComponents;
+                public declare elements: Elements;
+                public declare components: NestedComponents;
 
                 //This time, the base container is going to be generically located
                 //So there is a chance for it to find more than one instance.
@@ -452,8 +452,8 @@ describe("Element collections", function () {
             }
 
             class FooterObject extends ComponentObject {
-                public elements: Elements;
-                public components: NestedComponents;
+                public declare elements: Elements;
+                public declare components: NestedComponents;
 
                 constructor() {
                     super(() => cy.get(`footer`));
@@ -522,8 +522,8 @@ describe("Element collections", function () {
                 }
 
                 class FooterObject extends ComponentObject {
-                    public elements: Elements;
-                    public components: NestedComponents;
+                    public declare elements: Elements;
+                    public declare components: NestedComponents;
 
                     constructor() {
                         super(() => cy.get(`footer`));
@@ -532,7 +532,7 @@ describe("Element collections", function () {
                             copyright: () => this.container().find(`p.MuiTypography-root`),
                         };
                         this.addNestedComponents = {
-                            LinkListObject: (fn: ComponentObjectFunction, title: string) => {
+                            LinkListObject: (fn: ComponentObjectFunction<LinkListObject>, title: string) => {
                                 this.performWithin(this.elements.gridLayout(), new LinkListObject(title), fn);
                             },
                         };
@@ -619,7 +619,7 @@ describe("Element collections", function () {
             "component objects can extend base classes and add new element selectors using this.addElements",
             function () {
                 class PricingCardObject extends ComponentObject {
-                    public elements: Elements;
+                    public declare elements: Elements;
 
                     constructor(title: string) {
                         super(() => {
@@ -641,8 +641,8 @@ describe("Element collections", function () {
 
     describe("Page objects", function () {
         class AppBar extends ComponentObject {
-            public elements: Elements;
-            public components: NestedComponents;
+            public declare elements: Elements;
+            public declare components: NestedComponents;
 
             constructor() {
                 super(() => cy.get(".MuiAppBar-root"));
@@ -654,8 +654,8 @@ describe("Element collections", function () {
         }
 
         class PricingHeaderObject extends ComponentObject {
-            public elements: Elements;
-            public components: NestedComponents;
+            public declare elements: Elements;
+            public declare components: NestedComponents;
 
             constructor() {
                 super(() => cy.get(".MuiCardHeader-root"));
@@ -668,8 +668,8 @@ describe("Element collections", function () {
         }
 
         class PricingCardObject extends ComponentObject {
-            public elements: Elements;
-            public components: NestedComponents;
+            public declare elements: Elements;
+            public declare components: NestedComponents;
 
             constructor(title: string) {
                 super(() => {
@@ -708,7 +708,7 @@ describe("Element collections", function () {
         }
 
         class FooterObject extends ComponentObject {
-            public components: NestedComponents;
+            public declare components: NestedComponents;
 
             constructor() {
                 super(() => cy.get(`footer`));
@@ -729,8 +729,8 @@ describe("Element collections", function () {
         }
 
         class ExamplePageObject extends PageObject {
-            public elements: Elements;
-            public components: NestedComponents;
+            public declare elements: Elements;
+            public declare components: NestedComponents;
 
             constructor() {
                 super();

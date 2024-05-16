@@ -29,7 +29,6 @@
   },
   "ignorePatterns": [
     "build",
-    "cypress",
     "dist",
     "node_modules",
     "**/*.js",
