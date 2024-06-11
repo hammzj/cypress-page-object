@@ -1,6 +1,26 @@
 import { BaseContainerFunction, ComponentObjectFunction, Elements, NestedComponents, IMetadata } from "./types";
 import ComponentObject from "./component.object";
 
+class MissingAssertionKeysError extends Error {
+    constructor(expectedKeys: string[], missingKeys: string[]) {
+        let msg = `All keys must be supplied in assertion object when forceProvideAllKeys is true: `;
+        msg = msg + "\nMissing keys: " + JSON.stringify(missingKeys);
+        msg = msg + "\nAllowed keys: " + JSON.stringify(expectedKeys);
+        super(msg);
+        this.name = "MissingAssertionKeysError";
+    }
+}
+
+class UnknownAssertionKeysError extends Error {
+    constructor(expectedKeys: string[], incorrectKeys: string[]) {
+        let msg = "Unknown keys supplied in assertion object: ";
+        msg = msg + "\nIncorrect keys: " + JSON.stringify(incorrectKeys);
+        msg = msg + "\nAllowed keys: " + JSON.stringify(expectedKeys);
+        super(msg);
+        this.name = "UnknownAssertionKeysError";
+    }
+}
+
 /**
  * Base class for describing page objects and components, which have a collection of element selectors
  */
@@ -194,5 +214,38 @@ export default abstract class ElementCollection {
         fn: ComponentObjectFunction<TComponentObject>
     ): void {
         baseElement.within(() => fn(nestedComponent));
+    }
+
+    /**
+     * This is a helper method when asserting a lot of items on a single component object.
+     * Typically, I've built these by supplying an object of key-value pairs, where the key is the element/item being asserted upon
+     * and the value being the value checked. To ensure that no incorrect keys are passed in, this will check
+     * that only allowable keys can be given. It does not explicitly check that all keys are provided,
+     * however, there is an option to enable needing all keys with `forceProvideAllKeys`.
+     * @param expectedKeys
+     * @param assertionEntries
+     * @param opts
+     */
+    public static _checkIfAssertionKeysAreCorrect(
+        expectedKeys: string[],
+        assertionEntries: any,
+        opts: {
+            forceProvideAllKeys: boolean;
+        } = { forceProvideAllKeys: false }
+    ) {
+        const { differenceWith, isEqual, isEmpty } = Cypress._;
+        const missingKeys = differenceWith(expectedKeys, Object.keys(assertionEntries), isEqual);
+        const incorrectKeys = differenceWith(Object.keys(assertionEntries), expectedKeys, isEqual);
+
+        cy.log("Keys missing in assertion object", missingKeys);
+        if (Cypress.env().DEBUG) console.debug("Keys missing in assertion object", missingKeys);
+        if (isEqual(opts.forceProvideAllKeys, true) && !isEmpty(missingKeys)) {
+            throw new MissingAssertionKeysError(expectedKeys, missingKeys);
+        }
+        if (!isEmpty(incorrectKeys)) {
+            throw new UnknownAssertionKeysError(expectedKeys, incorrectKeys);
+        }
+
+        return true;
     }
 }
