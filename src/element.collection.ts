@@ -226,6 +226,8 @@ export default abstract class ElementCollection {
      * @param assertionEntries
      * @param opts
      */
+
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     public static _checkIfAssertionKeysAreCorrect(
         expectedKeys: string[],
         assertionEntries: any,
